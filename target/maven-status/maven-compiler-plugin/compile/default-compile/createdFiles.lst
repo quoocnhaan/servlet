@@ -1,0 +1,12 @@
+com\myshop\model\Product.class
+com\myshop\util\DBContext.class
+com\myshop\controllers\FrontController.class
+com\myshop\model\OrderItem.class
+com\myshop\model\Order.class
+com\myshop\dao\ProductDAO.class
+com\myshop\util\NewClass.class
+com\myshop\model\User.class
+com\myshop\controllers\ProductController.class
+com\myshop\controllers\Config.class
+com\myshop\facade\ProductFacade.class
+com\myshop\model\Category.class
