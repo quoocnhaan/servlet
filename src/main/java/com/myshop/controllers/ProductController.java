@@ -4,8 +4,10 @@
  */
 package com.myshop.controllers;
 
+import com.myshop.facade.CategoryFacade;
 import com.myshop.facade.ProductFacade;
-import com.myshop.model.Product;
+import com.myshop.models.Category;
+import com.myshop.models.Product;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -22,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ProductController extends HttpServlet {
 
     private final ProductFacade productFacade = new ProductFacade();
+    private final CategoryFacade categoryFacade = new CategoryFacade();
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -48,8 +51,10 @@ public class ProductController extends HttpServlet {
     protected void index(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            List<Product> products = productFacade.getAllProducts();
+            List<Product> products = productFacade.getAll();
+            List<Category> categories = categoryFacade.getAll();
             request.setAttribute("products", products);
+            request.setAttribute("categories", categories);
         } catch (Exception ex) {
             request.setAttribute("message", ex.getMessage());
             ex.printStackTrace();

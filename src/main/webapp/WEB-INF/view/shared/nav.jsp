@@ -3,7 +3,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="<c:url value='/product'/>">WebShop</a>
+        <a class="navbar-brand" href="<c:url value='/home/index.do'/>">WebShop</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -11,7 +11,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="<c:url value='/product'/>">Home</a>
+                    <a class="nav-link" href="<c:url value='/home/index.do'/>">Home</a>
                 </li>
                 <c:choose>
                     <c:when test="${not empty sessionScope.user}">

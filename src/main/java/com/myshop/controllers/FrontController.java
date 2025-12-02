@@ -81,5 +81,4 @@ public class FrontController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }

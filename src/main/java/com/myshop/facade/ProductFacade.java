@@ -9,7 +9,7 @@ package com.myshop.facade;
  * @author PC
  */
 import com.myshop.dao.ProductDAO;
-import com.myshop.model.Product;
+import com.myshop.models.Product;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -21,14 +21,14 @@ public class ProductFacade {
     private ProductDAO productDAO = new ProductDAO();
 
     // Get all products
-    public List<Product> getAllProducts() {
+    public List<Product> getAll() {
         return productDAO.getAllProducts();
     }
 
     // Search by name
     public List<Product> searchByName(String keyword) {
         if (keyword == null || keyword.isEmpty()) {
-            return getAllProducts();
+            return getAll();
         }
         return productDAO.getAllProducts().stream()
                 .filter(p -> p.getName().toLowerCase().contains(keyword.toLowerCase()))

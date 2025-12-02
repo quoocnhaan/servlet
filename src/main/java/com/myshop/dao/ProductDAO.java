@@ -8,8 +8,8 @@ package com.myshop.dao;
  *
  * @author PC
  */
-import com.myshop.model.Product;
-import com.myshop.model.Category;
+import com.myshop.models.Product;
+import com.myshop.models.Category;
 import com.myshop.util.DBContext;
 
 import java.sql.*;
