@@ -39,6 +39,26 @@ public class FrontController extends HttpServlet {
         //lưu controller & action vào request
         request.setAttribute("controller", controller);
         request.setAttribute("action", action);
+
+        String page = request.getParameter("page");
+        if (page != null) {
+            request.setAttribute("page", page);
+        }
+        String sort = request.getParameter("sort");
+        if (sort != null) {
+            request.setAttribute("sort", sort);
+        }
+
+        String category = request.getParameter("category");
+        if (category != null) {
+            request.setAttribute("category", category);
+        }
+
+        String search = request.getParameter("search");
+        if (search != null) {
+            request.setAttribute("search", search);
+        }
+        // Store in request (or session if needed)
         //chuyển request & response cho contrller xử lý tiếp
         request.getRequestDispatcher(controller).forward(request, response);
     }

@@ -11,5 +11,5 @@ package com.myshop.controllers;
  */
 public class Config {
     public static final String LAYOUT = "/WEB-INF/view/shared/layout.jsp";
-    public static final int PAGESIZE = 6;
+    public static final int PAGESIZE = 8;
 }

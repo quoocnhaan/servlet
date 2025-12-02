@@ -8,6 +8,7 @@ package com.myshop.facade;
  *
  * @author PC
  */
+import com.myshop.controllers.Config;
 import com.myshop.dao.ProductDAO;
 import com.myshop.models.Product;
 
@@ -26,39 +27,50 @@ public class ProductFacade {
     }
 
     // Search by name
-    public List<Product> searchByName(String keyword) {
-        if (keyword == null || keyword.isEmpty()) {
-            return getAll();
+    public List<Product> searchByName(List<Product> products, String keyword) {
+        if (products == null) {
+            products = getAll();
         }
-        return productDAO.getAllProducts().stream()
+        if (keyword == null || keyword.isEmpty()) {
+            return products;
+        }
+        return products.stream()
                 .filter(p -> p.getName().toLowerCase().contains(keyword.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
     // Filter by category ID
-    public List<Product> filterByCategory(int categoryId) {
-        return productDAO.getAllProducts().stream()
+    public List<Product> filterByCategory(List<Product> products, int categoryId) {
+        if (products == null) {
+            return productDAO.getAllProducts().stream()
+                    .filter(p -> p.getCategory() != null && p.getCategory().getId() == categoryId)
+                    .collect(Collectors.toList());
+        }
+        return products.stream()
                 .filter(p -> p.getCategory() != null && p.getCategory().getId() == categoryId)
                 .collect(Collectors.toList());
     }
 
     // Sort by price
-    public List<Product> sortByPrice(boolean ascending) {
-        List<Product> products = productDAO.getAllProducts();
+    public List<Product> sortByPrice(List<Product> products, boolean desc) {
+        if (products == null) {
+            products = getAll();
+        }
         products.sort(Comparator.comparingDouble(Product::getPrice));
-        if (!ascending) {
+        if (desc) {
             Collections.reverse(products);
         }
         return products;
     }
 
     // Pagination
-    public List<Product> paginate(List<Product> products, int page, int pageSize) {
-        int fromIndex = (page - 1) * pageSize;
-        int toIndex = Math.min(fromIndex + pageSize, products.size());
-        if (fromIndex > toIndex) {
-            return Collections.emptyList();
-        }
+    public List<Product> paginate(int page) {
+        return productDAO.getProductsPaginated(page);
+    }
+
+    public List<Product> paginate(List<Product> products, int page) {
+        int fromIndex = (page - 1) * Config.PAGESIZE;
+        int toIndex = Math.min((fromIndex + Config.PAGESIZE), products.size());
         return products.subList(fromIndex, toIndex);
     }
 

@@ -61,7 +61,7 @@
     <div class="container text-center">
         <h2>About WebShop</h2>
         <p class="lead mb-4">WebShop is your one-stop online shop for a wide range of high-quality products at great prices. Enjoy fast delivery, secure payments, and excellent customer service.</p>
-        <a href="<c:url value='/product/index.do'/>" class="btn btn-lg btn-primary">Browse All Products</a>
+        <a href="<c:url value='/product/index.do?page=1'/>" class="btn btn-lg btn-primary">Browse All Products</a>
     </div>
 </div>
 
@@ -87,7 +87,7 @@
 <!-- Call-to-Action Section -->
 <div class="text-center my-5">
     <h3>Start Shopping Today!</h3>
-    <a href="<c:url value='/product/index.do'/>" class="btn btn-lg btn-primary mt-3">Shop Now</a>
+    <a href="<c:url value='/product/index.do?page=1'/>" class="btn btn-lg btn-primary mt-3">Shop Now</a>
 </div>
 
 

@@ -51,16 +51,52 @@ public class ProductController extends HttpServlet {
     protected void index(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            List<Product> products = productFacade.getAll();
+            List<Product> products = null;
+            int totalProducts = 0;
+            int totalPages = 0;
+
             List<Category> categories = categoryFacade.getAll();
-            request.setAttribute("products", products);
             request.setAttribute("categories", categories);
+
+            String categoryStr = request.getParameter("category");
+            String search = request.getParameter("search");
+            String sort = request.getParameter("sort");
+
+            int page = Integer.parseInt((String) request.getAttribute("page"));
+            request.setAttribute("currentPage", page);
+
+            if ((categoryStr != null && !categoryStr.isBlank()) || (search != null && !search.isBlank()) || (sort != null && !sort.isBlank())) {
+                if (!categoryStr.isBlank()) {
+                    int categoryId = Integer.parseInt(categoryStr);
+                    if (categoryId != 0) {
+                        products = productFacade.filterByCategory(products, categoryId);
+                    }
+                }
+                if (!search.isBlank()) {
+                    products = productFacade.searchByName(products, search);
+                    request.setAttribute("search", search);
+                }
+
+                if (!sort.isBlank()) {
+                    products = productFacade.sortByPrice(products, sort.equalsIgnoreCase("desc"));
+                    request.setAttribute("sort", sort);
+                }
+                totalProducts = products.size();
+                products = productFacade.paginate(products, page);
+            } else {
+                products = productFacade.paginate(page);
+                totalProducts = productFacade.getAll().size();
+            }
+            totalPages = (int) Math.ceil((double) totalProducts / Config.PAGESIZE);
+            request.setAttribute("totalPages", totalPages);
+
+            request.setAttribute("products", products);
+
         } catch (Exception ex) {
             request.setAttribute("message", ex.getMessage());
             ex.printStackTrace();
         }
         request.getRequestDispatcher(Config.LAYOUT).forward(request, response);
-
     }
 
     protected void detail(HttpServletRequest request, HttpServletResponse response)

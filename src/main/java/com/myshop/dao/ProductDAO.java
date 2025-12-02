@@ -8,6 +8,7 @@ package com.myshop.dao;
  *
  * @author PC
  */
+import com.myshop.controllers.Config;
 import com.myshop.models.Product;
 import com.myshop.models.Category;
 import com.myshop.util.DBContext;
@@ -152,4 +153,46 @@ public class ProductDAO {
             return false;
         }
     }
+
+    public List<Product> getProductsPaginated(int page) {
+        List<Product> list = new ArrayList<>();
+
+        int offset = (page - 1) * Config.PAGESIZE;
+
+        String sql = "SELECT p.*, c.Id AS CategoryId, c.Name AS CategoryName FROM Products p LEFT JOIN Categories c ON p.CategoryId = c.Id ORDER BY p.Id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try (Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, offset);
+            ps.setInt(2, Config.PAGESIZE);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+
+                    Category category = null;
+                    int categoryId = rs.getInt("CategoryId");
+                    if (!rs.wasNull()) {
+                        category = new Category(categoryId, rs.getString("CategoryName"));
+                    }
+
+                    Product p = new Product(
+                            rs.getInt("Id"),
+                            rs.getString("Name"),
+                            rs.getString("Description"),
+                            rs.getDouble("Price"),
+                            rs.getInt("Quantity"),
+                            rs.getString("ImagePath"),
+                            category,
+                            rs.getTimestamp("CreatedAt")
+                    );
+                    list.add(p);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }

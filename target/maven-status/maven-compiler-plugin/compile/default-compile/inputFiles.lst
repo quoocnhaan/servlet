@@ -1,13 +1,16 @@
-C:\Users\LENOVO\Desktop\web\servlet\servlet\src\main\java\com\myshop\controllers\FrontController.java
-C:\Users\LENOVO\Desktop\web\servlet\servlet\src\main\java\com\myshop\controllers\ProductController.java
-C:\Users\LENOVO\Desktop\web\servlet\servlet\src\main\java\com\myshop\model\Category.java
-C:\Users\LENOVO\Desktop\web\servlet\servlet\src\main\java\com\myshop\model\OrderItem.java
-C:\Users\LENOVO\Desktop\web\servlet\servlet\src\main\java\com\myshop\facade\ProductFacade.java
-C:\Users\LENOVO\Desktop\web\servlet\servlet\src\main\java\com\myshop\model\Order.java
-C:\Users\LENOVO\Desktop\web\servlet\servlet\src\main\java\com\myshop\util\DBContext.java
-C:\Users\LENOVO\Desktop\web\servlet\servlet\src\main\java\com\myshop\controllers\HomeController.java
-C:\Users\LENOVO\Desktop\web\servlet\servlet\src\main\java\com\myshop\model\Product.java
-C:\Users\LENOVO\Desktop\web\servlet\servlet\src\main\java\com\myshop\model\User.java
-C:\Users\LENOVO\Desktop\web\servlet\servlet\src\main\java\com\myshop\controllers\Config.java
-C:\Users\LENOVO\Desktop\web\servlet\servlet\src\main\java\com\myshop\util\NewClass.java
-C:\Users\LENOVO\Desktop\web\servlet\servlet\src\main\java\com\myshop\dao\ProductDAO.java
+C:\Users\PC\Desktop\Code Files\Web\ServletProject\src\main\java\com\myshop\dao\ProductDAO.java
+C:\Users\PC\Desktop\Code Files\Web\ServletProject\src\main\java\com\myshop\models\Category.java
+C:\Users\PC\Desktop\Code Files\Web\ServletProject\src\main\java\com\myshop\util\NewClass.java
+C:\Users\PC\Desktop\Code Files\Web\ServletProject\src\main\java\com\myshop\dao\CategoryDAO.java
+C:\Users\PC\Desktop\Code Files\Web\ServletProject\src\main\java\com\myshop\controllers\HomeController.java
+C:\Users\PC\Desktop\Code Files\Web\ServletProject\src\main\java\com\myshop\controllers\Config.java
+C:\Users\PC\Desktop\Code Files\Web\ServletProject\src\main\java\com\myshop\controllers\CategoryController.java
+C:\Users\PC\Desktop\Code Files\Web\ServletProject\src\main\java\com\myshop\models\User.java
+C:\Users\PC\Desktop\Code Files\Web\ServletProject\src\main\java\com\myshop\controllers\FrontController.java
+C:\Users\PC\Desktop\Code Files\Web\ServletProject\src\main\java\com\myshop\models\Order.java
+C:\Users\PC\Desktop\Code Files\Web\ServletProject\src\main\java\com\myshop\facade\CategoryFacade.java
+C:\Users\PC\Desktop\Code Files\Web\ServletProject\src\main\java\com\myshop\models\OrderItem.java
+C:\Users\PC\Desktop\Code Files\Web\ServletProject\src\main\java\com\myshop\util\DBContext.java
+C:\Users\PC\Desktop\Code Files\Web\ServletProject\src\main\java\com\myshop\controllers\ProductController.java
+C:\Users\PC\Desktop\Code Files\Web\ServletProject\src\main\java\com\myshop\facade\ProductFacade.java
+C:\Users\PC\Desktop\Code Files\Web\ServletProject\src\main\java\com\myshop\models\Product.java

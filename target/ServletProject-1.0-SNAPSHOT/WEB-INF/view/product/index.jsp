@@ -3,7 +3,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <!-- Search & Filter Form -->
-<form method="get" action="<c:url value='/product'/>" class="row g-3 mb-4">
+<form method="get" action="<c:url value='/product/index.do'/>" class="row g-3 mb-4">
+    <input type="hidden" name="page" value="1">
     <div class="col-md-4">
         <input type="text" name="search" class="form-control" placeholder="Search products..." 
                value="${search}">
@@ -12,7 +13,7 @@
         <select name="category" class="form-select">
             <option value="0">All Categories</option>
             <c:forEach var="cat" items="${categories}">
-                <option value="${cat.id}" 
+                <option value="${cat.id}"
                         <c:if test="${cat.id == category}">selected</c:if>>
                     ${cat.name}
                 </option>
@@ -35,7 +36,9 @@
     <c:forEach var="product" items="${products}">
         <div class="col-md-3 mb-4">
             <div class="card h-100">
-                <img src="<c:url value='${product.imagePath}'/>" class="card-img-top" alt="${product.name}">
+                <a href="<c:url value='/product/detail.do?id=${product.id}'/>">                    
+                    <img src="<c:url value='${product.imagePath}'/>" class="card-img-top" alt="${product.name}">
+                </a>
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">${product.name}</h5>
                     <p class="card-text text-truncate">${product.description}</p>
@@ -52,7 +55,7 @@
     <ul class="pagination justify-content-center">
         <c:forEach var="i" begin="1" end="${totalPages}">
             <li class="page-item <c:if test='${i == currentPage}'>active</c:if>">
-                <a class="page-link" href="<c:url value='/product?page=${i}&search=${search}&category=${category}&sort=${sort}'/>">
+                <a class="page-link" href="<c:url value='/product/index.do?page=${i}&search=${search}&category=${category}&sort=${sort}'/>">
                     ${i}
                 </a>
             </li>
