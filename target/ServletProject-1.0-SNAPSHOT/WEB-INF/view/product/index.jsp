@@ -43,7 +43,7 @@
                     <h5 class="card-title">${product.name}</h5>
                     <p class="card-text text-truncate">${product.description}</p>
                     <p class="card-text fw-bold mt-auto">$<fmt:formatNumber value="${product.price}" type="currency"/></p>
-                    <a href="<c:url value='/cart?action=add&productId=${product.id}'/>" class="btn btn-success mt-2">Add to Cart</a>
+                    <a href="<c:url value='/cart/add.do?id=${product.id}'/>" class="btn btn-success mt-2">Add to Cart</a>
                 </div>
             </div>
         </div>

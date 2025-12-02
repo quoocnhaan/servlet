@@ -5,12 +5,15 @@ com\myshop\controllers\FrontController.class
 com\myshop\dao\CategoryDAO.class
 com\myshop\models\Order.class
 com\myshop\dao\ProductDAO.class
+com\myshop\models\Item.class
 com\myshop\util\NewClass.class
 com\myshop\models\User.class
 com\myshop\controllers\CategoryController.class
 com\myshop\controllers\ProductController.class
 com\myshop\controllers\HomeController.class
 com\myshop\controllers\Config.class
+com\myshop\controllers\CartController.class
 com\myshop\facade\ProductFacade.class
 com\myshop\models\OrderItem.class
+com\myshop\models\Cart.class
 com\myshop\models\Category.class
