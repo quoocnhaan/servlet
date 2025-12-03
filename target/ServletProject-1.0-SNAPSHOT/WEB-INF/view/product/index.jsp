@@ -32,23 +32,65 @@
     </form>
 
     <!-- Product Cards -->
+    <!-- Product Cards -->
     <div class="row">
     <c:forEach var="product" items="${products}">
         <div class="col-md-3 mb-4">
             <div class="card h-100">
+
+                <!-- Product link and image -->
                 <a href="<c:url value='/product/detail.do?id=${product.id}'/>">                    
-                    <img src="<c:url value='${product.imagePath}'/>" class="card-img-top" alt="${product.name}">
+                    <img src="<c:url value='${product.imagePath}'/>" 
+                         class="card-img-top" 
+                         alt="${product.name}">
                 </a>
+
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">${product.name}</h5>
                     <p class="card-text text-truncate">${product.description}</p>
-                    <p class="card-text fw-bold mt-auto">$<fmt:formatNumber value="${product.price}" type="currency"/></p>
-                    <a href="<c:url value='/cart/add.do?id=${product.id}'/>" class="btn btn-success mt-2">Add to Cart</a>
+
+                    <!-- Price with discount -->
+                    <c:choose>
+                        <c:when test="${product.discount > 0}">
+                            <p class="card-text text-muted mb-1">
+                                <s><fmt:formatNumber value="${product.price}" type="currency"/></s>
+                            </p>
+                            <p class="card-text fw-bold mb-1">
+                                <fmt:formatNumber value="${product.priceAfterDiscount}" type="currency"/>
+                            </p>
+                        </c:when>
+                        <c:otherwise>
+                            <p class="card-text fw-bold mb-1">
+                                <fmt:formatNumber value="${product.price}" type="currency"/>
+                            </p>
+                        </c:otherwise>
+                    </c:choose>
+
+                    <!-- Conditional buttons -->
+                    <c:choose>
+                        <c:when test="${user.role == 'admin'}">
+                            <a href="<c:url value='/product/edit.do?id=${product.id}&returnUrl=${pageUrl}'/>" class="btn btn-primary mb-1">Edit</a>
+                            <a href="<c:url value='/product/delete.do?id=${product.id}'/>"
+                               class="btn btn-danger"
+                               onclick="return confirm('Are you sure you want to delete ${product.name}?');">
+                                Delete
+                            </a>
+                        </c:when>
+                        <c:otherwise>
+                            <a href="<c:url value='/cart/add.do?id=${product.id}'/>" 
+                               class="btn btn-success mt-auto mb-2">
+                                Add to Cart
+                            </a>
+                        </c:otherwise>
+                    </c:choose>
+
                 </div>
             </div>
         </div>
     </c:forEach>
 </div>
+
+
 
 <!-- Pagination -->
 <nav aria-label="Page navigation">

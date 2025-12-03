@@ -67,4 +67,8 @@ public class OrderItem {
     public void setUnitPrice(double unitPrice) {
         this.unitPrice = unitPrice;
     }
+
+    public double getTotal() {
+        return quantity * unitPrice;
+    }
 }

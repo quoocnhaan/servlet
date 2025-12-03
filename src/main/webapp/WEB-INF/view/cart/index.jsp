@@ -7,7 +7,7 @@
 
     <c:if test="${empty cartItems}">
         <div class="alert alert-info">Your cart is empty.</div>
-        <a href="<c:url value='/products'/>" class="btn btn-primary mt-3">
+        <a href="<c:url value='/product/index.do?page=1'/>" class="btn btn-primary mt-3">
             Continue Shopping
         </a>
     </c:if>
@@ -46,9 +46,21 @@
                             <strong>${item.product.name}</strong>
                         </td>
 
-                        <!-- Price -->
+                        <!-- Price with Discount -->
                         <td>
-                            $<fmt:formatNumber value="${item.product.price}" type="number" minFractionDigits="2"/>
+                            <c:choose>
+                                <c:when test="${item.product.discount > 0}">
+                                    <!-- Original price struck-through -->
+                                    <span class="text-muted">
+                                        <s><fmt:formatNumber value="${item.product.price}" type="number" minFractionDigits="2"/></s>
+                                    </span><br/>
+                                    <!-- Discounted price -->
+                                    $<fmt:formatNumber value="${item.product.priceAfterDiscount}" type="number" minFractionDigits="2"/>
+                                </c:when>
+                                <c:otherwise>
+                                    $<fmt:formatNumber value="${item.product.price}" type="number" minFractionDigits="2"/>
+                                </c:otherwise>
+                            </c:choose>
                         </td>
 
                         <!-- Quantity -->
@@ -63,11 +75,9 @@
                             <input type="hidden" name="id" value="${item.product.id}">
                         </td>
 
-                        <!-- Row Total -->
+                        <!-- Row Total with Discount -->
                         <td>
-                            $<fmt:formatNumber value="${item.product.price * item.quantity}"
-                                              type="number"
-                                              minFractionDigits="2"/>
+                            $<fmt:formatNumber value="${item.product.priceAfterDiscount * item.quantity}" type="number" minFractionDigits="2"/>
                         </td>
 
                         <!-- Update Button -->
@@ -89,7 +99,6 @@
 
                     </tr>
                 </form>
-
             </c:forEach>
 
             </tbody>
@@ -113,7 +122,7 @@
         </div>
 
         <div class="mt-4 d-flex justify-content-end">
-            <a href="<c:url value='/checkout'/>" class="btn btn-success btn-lg">
+            <a href="<c:url value='/order/checkout.do'/>" class="btn btn-success btn-lg">
                 Proceed to Checkout
             </a>
         </div>

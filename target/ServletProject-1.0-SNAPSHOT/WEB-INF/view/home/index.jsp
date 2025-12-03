@@ -1,11 +1,5 @@
-<%-- 
-    Document   : index
-    Created on : Dec 1, 2025, 9:59:34 PM
-    Author     : PC
---%>
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <c:set var="pageTitle" value="Home" />
 
@@ -65,17 +59,42 @@
     </div>
 </div>
 
-<!-- Optional Small Featured Products Section -->
+<!-- New Arrivals Section -->
 <div class="container my-5">
     <h2 class="mb-4 text-center">New Arrivals</h2>
     <div class="row g-4">
         <c:forEach var="product" items="${newProducts}" begin="0" end="3">
             <div class="col-md-3">
-                <div class="card h-100 shadow-sm">
+                <div class="card h-100 shadow-sm position-relative">
                     <img src="<c:url value='${product.imagePath}'/>" class="card-img-top" alt="${product.name}">
+
+                    <!-- Discount Badge -->
+                    <c:if test="${product.discount > 0}">
+                        <span class="badge bg-danger position-absolute top-0 start-0 m-2">
+                            ${product.discount * 100}% OFF
+                        </span>
+                    </c:if>
+
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">${product.name}</h5>
-                        <p class="card-text fw-bold mt-auto">$${product.price}</p>
+
+                        <!-- Price with Discount -->
+                        <c:choose>
+                            <c:when test="${product.discount > 0}">
+                                <p class="text-muted mb-1">
+                                    <s>$<fmt:formatNumber value="${product.price}" type="currency"/></s>
+                                </p>
+                                <p class="fw-bold mt-auto mb-1">
+                                    $<fmt:formatNumber value="${product.priceAfterDiscount}" type="currency"/>
+                                </p>
+                            </c:when>
+                            <c:otherwise>
+                                <p class="fw-bold mt-auto mb-1">
+                                    $<fmt:formatNumber value="${product.price}" type="currency"/>
+                                </p>
+                            </c:otherwise>
+                        </c:choose>
+
                         <a href="<c:url value='/cart?action=add&productId=${product.id}'/>" class="btn btn-success mt-2">Add to Cart</a>
                     </div>
                 </div>
@@ -89,6 +108,3 @@
     <h3>Start Shopping Today!</h3>
     <a href="<c:url value='/product/index.do?page=1'/>" class="btn btn-lg btn-primary mt-3">Shop Now</a>
 </div>
-
-
-

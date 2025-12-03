@@ -19,11 +19,12 @@ public class User {
     private String email;
     private String role;
     private Date createdAt;
+    private boolean enabled;
 
     public User() {
     }
 
-    public User(int id, String username, String password, String fullName, String email, String role, Date createdAt) {
+    public User(int id, String username, String password, String fullName, String email, String role, Date createdAt, boolean enabled) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -31,6 +32,7 @@ public class User {
         this.email = email;
         this.role = role;
         this.createdAt = createdAt;
+        this.enabled = enabled;
     }
 
     // Getters & Setters
@@ -88,5 +90,13 @@ public class User {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

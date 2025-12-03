@@ -6,10 +6,9 @@
 package com.myshop.controllers;
 
 import com.myshop.models.Cart;
+import com.myshop.models.User;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -49,7 +48,7 @@ public class CartController extends HttpServlet {
                 remove(request, response);
                 break;
             case "empty":
-                remove(request, response);
+                empty(request, response);
                 break;
             case "update":
                 update(request, response);
@@ -77,9 +76,17 @@ public class CartController extends HttpServlet {
 
     protected void add(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String referer = request.getHeader("Referer");
+
         try {
             //lấy session object
             HttpSession session = request.getSession();
+
+            User user = (User) session.getAttribute("user");
+            if (user == null) {
+                request.getRequestDispatcher("/user/login.do").forward(request, response);
+            }
+
             //lấy cart từ session
             Cart cart = (Cart) session.getAttribute("cart");
             //nếu trong session chưa có cart thì tạo mới
@@ -89,7 +96,13 @@ public class CartController extends HttpServlet {
             }
             //lấy thông tin từ client
             int id = Integer.parseInt(request.getParameter("id"));
-            cart.add(id, 1);
+            String qtyStr = request.getParameter("qty");
+            if (qtyStr == null) {
+                cart.add(id, 1);
+            } else {
+                cart.add(id, Integer.parseInt(qtyStr));
+            }
+
         } catch (SQLException ex) {
             //Lưu thông báo lỗi vào request để truyền thông báo lỗi cho view toy.jsp
             request.setAttribute("message", ex.getMessage());
@@ -98,7 +111,12 @@ public class CartController extends HttpServlet {
         }
         //vẫn ở lại trang /home/index.do
         //request.getRequestDispatcher("/home/index.do").forward(request, response);
-        request.getRequestDispatcher("/").forward(request, response);
+        if (referer != null) {
+            response.sendRedirect(referer);
+        } else {
+            // fallback if no referer header exists
+            response.sendRedirect(request.getContextPath() + "/home/index.do");
+        }
     }
 
     protected void remove(HttpServletRequest request, HttpServletResponse response)
@@ -111,9 +129,6 @@ public class CartController extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         //remove item
         cart.remove(id);
-
-        request.setAttribute("cartItems", cart.getItems());
-        request.setAttribute("grandTotal", cart.getTotal());
 
         //vẫn ở lại trang giỏ hàng /cart/index.do
         request.getRequestDispatcher("/cart/index.do").forward(request, response);

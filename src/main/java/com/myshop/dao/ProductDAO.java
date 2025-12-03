@@ -40,6 +40,7 @@ public class ProductDAO {
                         rs.getString("Name"),
                         rs.getString("Description"),
                         rs.getDouble("Price"),
+                        rs.getDouble("Discount"),
                         rs.getInt("Quantity"),
                         rs.getString("ImagePath"),
                         category,
@@ -76,6 +77,7 @@ public class ProductDAO {
                             rs.getString("Name"),
                             rs.getString("Description"),
                             rs.getDouble("Price"),
+                            rs.getDouble("Discount"),
                             rs.getInt("Quantity"),
                             rs.getString("ImagePath"),
                             category,
@@ -91,20 +93,21 @@ public class ProductDAO {
 
     // Insert new product
     public boolean insertProduct(Product product) {
-        String sql = "INSERT INTO Products (Name, Description, Price, Quantity, ImagePath, CategoryId) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Products (Name, Description, Price, Discount, Quantity, ImagePath, CategoryId) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, product.getName());
             ps.setString(2, product.getDescription());
             ps.setDouble(3, product.getPrice());
-            ps.setInt(4, product.getQuantity());
-            ps.setString(5, product.getImagePath());
+            ps.setDouble(4, product.getDiscount());
+            ps.setInt(5, product.getQuantity());
+            ps.setString(6, product.getImagePath());
             if (product.getCategory() != null) {
-                ps.setInt(6, product.getCategory().getId());
+                ps.setInt(7, product.getCategory().getId());
             } else {
-                ps.setNull(6, Types.INTEGER);
+                ps.setNull(7, Types.INTEGER);
             }
 
             return ps.executeUpdate() > 0;
@@ -117,14 +120,14 @@ public class ProductDAO {
 
     // Update product
     public boolean updateProduct(Product product) {
-        String sql = "UPDATE Products SET Name=?, Description=?, Price=?, Quantity=?, ImagePath=?, CategoryId=? WHERE Id=?";
+        String sql = "UPDATE Products SET Name=?, Description=?, Price=?, Discount = ?, Quantity=?, CategoryId=? WHERE Id=?";
         try (Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, product.getName());
             ps.setString(2, product.getDescription());
             ps.setDouble(3, product.getPrice());
-            ps.setInt(4, product.getQuantity());
-            ps.setString(5, product.getImagePath());
+            ps.setDouble(4, product.getDiscount());
+            ps.setInt(5, product.getQuantity());
             if (product.getCategory() != null) {
                 ps.setInt(6, product.getCategory().getId());
             } else {
@@ -140,6 +143,30 @@ public class ProductDAO {
         }
     }
 
+//    public boolean updateProduct(Product product) {
+//        String sql = "UPDATE Products SET Name=?, Description=?, Price=?, Discount = ?, Quantity=?, ImagePath=?, CategoryId=? WHERE Id=?";
+//        try (Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+//
+//            ps.setString(1, product.getName());
+//            ps.setString(2, product.getDescription());
+//            ps.setDouble(3, product.getPrice());
+//            ps.setDouble(4, product.getPrice());
+//            ps.setInt(5, product.getQuantity());
+//            ps.setString(6, product.getImagePath());
+//            if (product.getCategory() != null) {
+//                ps.setInt(7, product.getCategory().getId());
+//            } else {
+//                ps.setNull(7, Types.INTEGER);
+//            }
+//            ps.setInt(8, product.getId());
+//
+//            return ps.executeUpdate() > 0;
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
     // Delete product
     public boolean deleteProduct(int id) {
         String sql = "DELETE FROM Products WHERE Id=?";
@@ -180,6 +207,7 @@ public class ProductDAO {
                             rs.getString("Name"),
                             rs.getString("Description"),
                             rs.getDouble("Price"),
+                            rs.getDouble("Discount"),
                             rs.getInt("Quantity"),
                             rs.getString("ImagePath"),
                             category,

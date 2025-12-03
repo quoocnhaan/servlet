@@ -16,13 +16,13 @@ import java.util.Map;
  * @author PHT
  */
 public class Cart {
-    
+
     private Map<Integer, Item> map;
-    
+
     public Cart() {
         this.map = new HashMap<>();
     }
-    
+
     public void add(int id, int quantity) throws SQLException {
         Item item = this.map.get(id);
         if (item == null) {
@@ -36,29 +36,33 @@ public class Cart {
             item.setQuantity(item.getQuantity() + quantity);
         }
     }
-    
+
     public void remove(int id) {
         this.map.remove(id);
     }
-    
+
     public Collection<Item> getItems() {
         return map.values();
     }
-    
+
     public double getTotal() {
         double sum = 0;
         for (Item item : map.values()) {
-            sum += item.getQuantity() * item.getProduct().getPrice();
+            sum += item.getQuantity() * item.getProduct().getPriceAfterDiscount();
         }
         return sum;
     }
-    
+
     public void empty() {
         map.clear();
     }
-    
+
     public void update(int id, int qty) {
         Item item = this.map.get(id);
         item.setQuantity(qty);
+    }
+
+    public int getSize() {
+        return map.size();
     }
 }

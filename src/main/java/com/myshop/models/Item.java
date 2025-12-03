@@ -40,7 +40,11 @@ public class Item {
         this.quantity = quantity;
     }
 
-    public double getCost() {
-        return this.quantity * this.getProduct().getPrice();
+    public double getTotal() {
+        return this.quantity * this.getProduct().getPriceAfterDiscount();
+    }
+    
+    public double getPrice() {
+        return getProduct().getPriceAfterDiscount();
     }
 }

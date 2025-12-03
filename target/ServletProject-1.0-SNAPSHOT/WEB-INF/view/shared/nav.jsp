@@ -15,26 +15,34 @@
                 </li>
                 <c:choose>
                     <c:when test="${not empty sessionScope.user}">
-                        <li class="nav-item">
-                            <a class="nav-link" href="<c:url value='/cart'/>">Cart</a>
-                        </li>
-                        <c:if test="${sessionScope.user.role == 'ADMIN'}">
+                        <c:if test="${sessionScope.user.role == 'admin'}">
                             <li class="nav-item">
-                                <a class="nav-link" href="<c:url value='/admin/dashboard'/>">Admin Dashboard</a>
+                                <a class="nav-link" href="<c:url value='/order/index.do'/>">Orders Tracking</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<c:url value='/product/index.do?page=1'/>">Products</a>
+                            </li>
+                        </c:if>
+                        <c:if test="${sessionScope.user.role == 'customer'}">
+                            <li class="nav-item">
+                                <a class="nav-link" href="<c:url value='/cart/index.do'/>">Cart (${cart.size}) </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<c:url value='/product/index.do?page=1'/>">Shopping</a>
                             </li>
                         </c:if>
                         <li class="nav-item">
-                            <a class="nav-link" href="<c:url value='/auth?action=logout'/>">
+                            <a class="nav-link" href="<c:url value='/user/logout.do'/>">
                                 Logout (${sessionScope.user.username})
                             </a>
                         </li>
                     </c:when>
                     <c:otherwise>
                         <li class="nav-item">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" class="nav-link">Login</a>
+                            <a href="<c:url value='/user/login.do'/>" class="nav-link">Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<c:url value='/auth?action=register'/>">Register</a>
+                            <a href="<c:url value='/user/register.do'/>" class="nav-link">Register</a>
                         </li>
                     </c:otherwise>
                 </c:choose>

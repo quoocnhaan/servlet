@@ -16,6 +16,7 @@ public class Product {
     private String name;
     private String description;
     private double price;
+    private double discount;
     private int quantity;
     private String imagePath;
     private Category category;
@@ -24,15 +25,37 @@ public class Product {
     public Product() {
     }
 
-    public Product(int id, String name, String description, double price, int quantity, String imagePath, Category category, Date createdAt) {
+    public Product(int id, String name, String description, double price, double discount, int quantity, String imagePath, Category category, Date createdAt) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
+        this.discount = discount;
         this.quantity = quantity;
         this.imagePath = imagePath;
         this.category = category;
         this.createdAt = createdAt;
+    }
+
+    public Product(int id, String name, String description, double price, double discount, int quantity, String imagePath, Category category) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.discount = discount;
+        this.quantity = quantity;
+        this.imagePath = imagePath;
+        this.category = category;
+    }
+
+    public Product(int id, String name, String description, double price, double discount, int quantity, Category category) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.discount = discount;
+        this.quantity = quantity;
+        this.category = category;
     }
 
     // Getters & Setters
@@ -98,5 +121,17 @@ public class Product {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
+
+    public double getPriceAfterDiscount() {
+        return price * (1 - discount);
     }
 }

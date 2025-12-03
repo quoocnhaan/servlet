@@ -5,8 +5,15 @@
 <div class="container mt-4">
     <div class="row">
         <!-- Product Image -->
-        <div class="col-md-5">
+        <div class="col-md-5 position-relative">
             <img src="<c:url value='${product.imagePath}'/>" class="img-fluid rounded" alt="${product.name}">
+
+            <!-- Discount Badge -->
+            <c:if test="${product.discount > 0}">
+                <span class="badge bg-danger position-absolute top-0 start-0 m-2">
+                    ${product.discount * 100}% OFF
+                </span>
+            </c:if>
         </div>
 
         <!-- Product Info -->
@@ -14,7 +21,26 @@
             <h2>${product.name}</h2>
             <p class="text-muted">Category: <c:out value="${product.category.name}"/></p>
             <p>${product.description}</p>
-            <p class="fw-bold h4">$<fmt:formatNumber value="${product.price}" type="currency"/></p>
+
+            <!-- Price with discount -->
+            <c:choose>
+                <c:when test="${product.discount > 0}">
+                    <!-- Original price struck-through -->
+                    <p class="text-muted mb-1">
+                        <s><fmt:formatNumber value="${product.price}" type="currency"/></s>
+                    </p>
+                    <!-- Discounted price -->
+                    <p class="fw-bold h4 mb-3">
+                        <fmt:formatNumber value="${product.priceAfterDiscount}" type="currency"/>
+                    </p>
+                </c:when>
+                <c:otherwise>
+                    <p class="fw-bold h4 mb-3">
+                        <fmt:formatNumber value="${product.price}" type="currency"/>
+                    </p>
+                </c:otherwise>
+            </c:choose>
+
             <p>Available Quantity: <c:out value="${product.quantity}"/></p>
 
             <!-- Stats -->
@@ -39,12 +65,12 @@
             </div>
 
             <!-- Add to Cart Form -->
-            <form action="<c:url value='/cart'/>" method="get" class="mt-3">
+            <form action="<c:url value='/cart/add.do'/>" method="get" class="mt-3">
                 <input type="hidden" name="action" value="add"/>
-                <input type="hidden" name="productId" value="${product.id}"/>
+                <input type="hidden" name="id" value="${product.id}"/>
                 <div class="mb-3">
                     <label for="quantity" class="form-label">Quantity:</label>
-                    <input type="number" name="quantity" id="quantity" value="1" min="1" max="${product.quantity}" class="form-control w-25">
+                    <input type="number" name="qty" id="quantity" value="1" min="1" max="${product.quantity}" class="form-control w-25">
                 </div>
                 <button type="submit" class="btn btn-success btn-lg">Add to Cart</button>
                 <a href="<c:url value='/product/index.do?page=1'/>" class="btn btn-secondary btn-lg ms-2">Back to Products</a>

@@ -30,9 +30,7 @@ public class ProductController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String action = (String) request.getAttribute("action");
-        if (action == null) {
-            action = "index"; // default action
-        }
+        String method = request.getMethod();
         switch (action) {
             case "index":
                 index(request, response);
@@ -40,8 +38,15 @@ public class ProductController extends HttpServlet {
             case "detail":
                 detail(request, response);
                 break;
-            case "search":
-                search(request, response);
+            case "edit":
+                if ("POST".equalsIgnoreCase(method)) {
+                    edit(request, response);
+                } else {
+                    showEditPage(request, response);
+                }
+                break;
+            case "delete":
+                delete(request, response);
                 break;
             default:
                 index(request, response);
@@ -50,6 +55,7 @@ public class ProductController extends HttpServlet {
 
     protected void index(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         try {
             List<Product> products = null;
             int totalProducts = 0;
@@ -92,6 +98,9 @@ public class ProductController extends HttpServlet {
 
             request.setAttribute("products", products);
 
+            String pageUrl = "/product/index.do?page=" + page + "&search=" + search + "&category=" + categoryStr + "&sort=" + sort;
+            request.setAttribute("pageUrl", pageUrl);
+
         } catch (Exception ex) {
             request.setAttribute("message", ex.getMessage());
             ex.printStackTrace();
@@ -110,21 +119,6 @@ public class ProductController extends HttpServlet {
             ex.printStackTrace();
         }
         request.getRequestDispatcher(Config.LAYOUT).forward(request, response);
-    }
-
-    protected void search(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-//        String keyword = request.getParameter("keyword");
-//        String categoryIdStr = request.getParameter("categoryId");
-//        try {
-//            int categoryId = categoryIdStr != null ? Integer.parseInt(categoryIdStr) : 0;
-//            List<Product> products = productFacade.searchProducts(keyword, categoryId);
-//            request.setAttribute("products", products);
-//        } catch (Exception ex) {
-//            request.setAttribute("message", ex.getMessage());
-//            ex.printStackTrace();
-//        }
-//        request.getRequestDispatcher(Config.LAYOUT).forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -165,5 +159,42 @@ public class ProductController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    private void edit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        String name = request.getParameter("name");
+        String description = request.getParameter("description");
+        double price = Double.parseDouble(request.getParameter("price"));
+        double discount = Double.parseDouble(request.getParameter("discount"));
+        int quantity = Integer.parseInt(request.getParameter("quantity"));
+        int categoryId = Integer.parseInt(request.getParameter("categoryId"));
+        String imagePath = request.getParameter("image");
+
+        Category category = categoryFacade.getById(categoryId);
+
+        Product product = new Product(id, name, description, price, discount, quantity, imagePath, category);
+
+        productFacade.updateProduct(product);
+
+        request.getRequestDispatcher("/product/index.do?page=1").forward(request, response);
+    }
+
+    private void showEditPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        String returnUrl = request.getParameter("returnUrl");
+
+        Product product = productFacade.getProductById(id);
+        List<Category> categories = categoryFacade.getAll();
+
+        request.setAttribute("categories", categories);
+        request.setAttribute("product", product);
+        request.setAttribute("returnUrl", returnUrl);
+
+        request.getRequestDispatcher(Config.LAYOUT).forward(request, response);
+    }
+
+    private void delete(HttpServletRequest request, HttpServletResponse response) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 
 }

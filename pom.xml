@@ -17,18 +17,23 @@
     </properties>
     
     <dependencies>
-        <!-- Java EE API for Servlets, JSP, EL (provided by Tomcat 9) -->
+        <!-- Servlet API (provided by Tomcat) -->
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>8.0</version>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
             <scope>provided</scope>
         </dependency>
 
-        <!-- JSTL for JSP tags like c:forEach, c:if -->
+        <!-- JSP / JSTL -->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
+            <groupId>javax.servlet.jsp.jstl</groupId>
+            <artifactId>javax.servlet.jsp.jstl-api</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jstl-impl</artifactId>
             <version>1.2</version>
         </dependency>
 
@@ -39,7 +44,7 @@
             <version>11.2.2.jre17</version>
         </dependency>
 
-        <!-- Apache Commons FileUpload (for file uploads / images) -->
+        <!-- Apache Commons FileUpload (file uploads / images) -->
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
@@ -60,7 +65,7 @@
             <version>0.4</version>
         </dependency>
 
-        <!-- Apache Commons DBCP2 (optional: database connection pooling) -->
+        <!-- Apache Commons DBCP2 (database connection pooling, optional) -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-dbcp2</artifactId>
@@ -74,6 +79,7 @@
             <version>2.15.2</version>
         </dependency>
     </dependencies>
+
 
 
     
