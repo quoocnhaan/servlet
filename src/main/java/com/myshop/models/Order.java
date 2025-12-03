@@ -15,7 +15,7 @@ public class Order {
     private int id;
     private User user;
     private Date orderDate;
-    private String status; // NEW, SHIPPED, PAID
+    private String status;
     private double totalAmount;
     private List<OrderItem> items;
 

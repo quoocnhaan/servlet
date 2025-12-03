@@ -10,6 +10,9 @@ package com.myshop.controllers;
  * @author PHT
  */
 public class Config {
+
     public static final String LAYOUT = "/WEB-INF/view/shared/layout.jsp";
     public static final int PAGESIZE = 8;
+    public static final String ADMIN = "admin";
+    public static final String CUSTOMER = "customer";
 }

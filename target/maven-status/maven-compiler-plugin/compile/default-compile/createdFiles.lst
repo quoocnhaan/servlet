@@ -1,4 +1,5 @@
 com\myshop\util\DBContext.class
+com\myshop\util\Hasher.class
 com\myshop\facade\CategoryFacade.class
 com\myshop\models\Product.class
 com\myshop\controllers\FrontController.class
@@ -6,7 +7,6 @@ com\myshop\dao\CategoryDAO.class
 com\myshop\models\Order.class
 com\myshop\dao\ProductDAO.class
 com\myshop\models\Item.class
-com\myshop\util\NewClass.class
 com\myshop\models\User.class
 com\myshop\controllers\CategoryController.class
 com\myshop\controllers\ProductController.class

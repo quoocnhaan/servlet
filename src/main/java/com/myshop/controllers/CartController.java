@@ -48,6 +48,12 @@ public class CartController extends HttpServlet {
             case "remove":
                 remove(request, response);
                 break;
+            case "empty":
+                remove(request, response);
+                break;
+            case "update":
+                update(request, response);
+                break;
         }
     }
 
@@ -79,13 +85,11 @@ public class CartController extends HttpServlet {
             //nếu trong session chưa có cart thì tạo mới
             if (cart == null) {
                 cart = new Cart();
+                session.setAttribute("cart", cart);
             }
             //lấy thông tin từ client
             int id = Integer.parseInt(request.getParameter("id"));
             cart.add(id, 1);
-            session.setAttribute("cart", cart);
-            request.setAttribute("cartItems", cart.getItems());
-            request.setAttribute("grandTotal", cart.getTotal());
         } catch (SQLException ex) {
             //Lưu thông báo lỗi vào request để truyền thông báo lỗi cho view toy.jsp
             request.setAttribute("message", ex.getMessage());
@@ -94,7 +98,7 @@ public class CartController extends HttpServlet {
         }
         //vẫn ở lại trang /home/index.do
         //request.getRequestDispatcher("/home/index.do").forward(request, response);
-        request.getRequestDispatcher(Config.LAYOUT).forward(request, response);
+        request.getRequestDispatcher("/").forward(request, response);
     }
 
     protected void remove(HttpServletRequest request, HttpServletResponse response)
@@ -107,6 +111,39 @@ public class CartController extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         //remove item
         cart.remove(id);
+
+        request.setAttribute("cartItems", cart.getItems());
+        request.setAttribute("grandTotal", cart.getTotal());
+
+        //vẫn ở lại trang giỏ hàng /cart/index.do
+        request.getRequestDispatcher("/cart/index.do").forward(request, response);
+    }
+
+    protected void empty(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        //lấy session object
+        HttpSession session = request.getSession();
+        //lấy cart từ session
+        Cart cart = (Cart) session.getAttribute("cart");
+        //remove item
+        cart.empty();
+        //vẫn ở lại trang giỏ hàng /cart/index.do
+        request.getRequestDispatcher("/cart/index.do").forward(request, response);
+    }
+
+    protected void update(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        //lấy session object
+        HttpSession session = request.getSession();
+        //lấy cart từ session
+        Cart cart = (Cart) session.getAttribute("cart");
+        //lấy id, qty của item
+        int id = Integer.parseInt(request.getParameter("id"));
+        int qty = Integer.parseInt(request.getParameter("qty"));
+
+        //update item
+        cart.update(id, qty);
+
         //vẫn ở lại trang giỏ hàng /cart/index.do
         request.getRequestDispatcher("/cart/index.do").forward(request, response);
     }

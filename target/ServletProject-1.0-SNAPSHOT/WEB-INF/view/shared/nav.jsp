@@ -31,7 +31,7 @@
                     </c:when>
                     <c:otherwise>
                         <li class="nav-item">
-                            <a class="nav-link" href="<c:url value='/auth?action=login'/>">Login</a>
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" class="nav-link">Login</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="<c:url value='/auth?action=register'/>">Register</a>

@@ -14,19 +14,19 @@ public class User {
 
     private int id;
     private String username;
-    private String passwordHash;
+    private String password;
     private String fullName;
     private String email;
-    private String role; // 'ADMIN' or 'CUSTOMER'
+    private String role;
     private Date createdAt;
 
     public User() {
     }
 
-    public User(int id, String username, String passwordHash, String fullName, String email, String role, Date createdAt) {
+    public User(int id, String username, String password, String fullName, String email, String role, Date createdAt) {
         this.id = id;
         this.username = username;
-        this.passwordHash = passwordHash;
+        this.password = password;
         this.fullName = fullName;
         this.email = email;
         this.role = role;
@@ -50,12 +50,12 @@ public class User {
         this.username = username;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFullName() {
