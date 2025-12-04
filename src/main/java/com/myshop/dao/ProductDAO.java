@@ -118,9 +118,8 @@ public class ProductDAO {
         }
     }
 
-    // Update product
     public boolean updateProduct(Product product) {
-        String sql = "UPDATE Products SET Name=?, Description=?, Price=?, Discount = ?, Quantity=?, CategoryId=? WHERE Id=?";
+        String sql = "UPDATE Products SET Name=?, Description=?, Price=?, Discount = ?, Quantity=?, ImagePath=?, CategoryId=? WHERE Id=?";
         try (Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, product.getName());
@@ -128,12 +127,13 @@ public class ProductDAO {
             ps.setDouble(3, product.getPrice());
             ps.setDouble(4, product.getDiscount());
             ps.setInt(5, product.getQuantity());
+            ps.setString(6, product.getImagePath());
             if (product.getCategory() != null) {
-                ps.setInt(6, product.getCategory().getId());
+                ps.setInt(7, product.getCategory().getId());
             } else {
-                ps.setNull(6, Types.INTEGER);
+                ps.setNull(7, Types.INTEGER);
             }
-            ps.setInt(7, product.getId());
+            ps.setInt(8, product.getId());
 
             return ps.executeUpdate() > 0;
 
@@ -143,30 +143,6 @@ public class ProductDAO {
         }
     }
 
-//    public boolean updateProduct(Product product) {
-//        String sql = "UPDATE Products SET Name=?, Description=?, Price=?, Discount = ?, Quantity=?, ImagePath=?, CategoryId=? WHERE Id=?";
-//        try (Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-//
-//            ps.setString(1, product.getName());
-//            ps.setString(2, product.getDescription());
-//            ps.setDouble(3, product.getPrice());
-//            ps.setDouble(4, product.getPrice());
-//            ps.setInt(5, product.getQuantity());
-//            ps.setString(6, product.getImagePath());
-//            if (product.getCategory() != null) {
-//                ps.setInt(7, product.getCategory().getId());
-//            } else {
-//                ps.setNull(7, Types.INTEGER);
-//            }
-//            ps.setInt(8, product.getId());
-//
-//            return ps.executeUpdate() > 0;
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            return false;
-//        }
-//    }
     // Delete product
     public boolean deleteProduct(int id) {
         String sql = "DELETE FROM Products WHERE Id=?";

@@ -12,6 +12,7 @@ import com.myshop.models.OrderItem;
 import com.myshop.models.User;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -54,11 +55,14 @@ public class OrderController extends HttpServlet {
                     showCheckOutPage(request, response);
                 }
                 break;
-            case "update":
-                update(request, response);
+            case "edit":
+                edit(request, response);
                 break;
             case "index":
                 index(request, response);
+                break;
+            case "revenue":
+                revenue(request, response);
                 break;
         }
     }
@@ -132,12 +136,22 @@ public class OrderController extends HttpServlet {
         request.getRequestDispatcher("/").forward(request, response);
     }
 
-    private void index(HttpServletRequest request, HttpServletResponse response) {
-
+    private void index(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            List<Order> orders = orderFacade.getAllOrders();
+            request.setAttribute("orders", orders);
+        } catch (Exception e) {
+            request.setAttribute("message", e.getMessage());
+            e.printStackTrace();
+        }
+        request.getRequestDispatcher(Config.LAYOUT).forward(request, response);
     }
 
-    private void update(HttpServletRequest request, HttpServletResponse response) {
-
+    private void edit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        String status = request.getParameter("status");
+        orderFacade.updateOrderStatus(id, status);
+        request.getRequestDispatcher("/order/index.do").forward(request, response);
     }
 
     private void showCheckOutPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -145,6 +159,14 @@ public class OrderController extends HttpServlet {
         Cart cart = (Cart) session.getAttribute("cart");
         request.setAttribute("cartItems", cart.getItems());
         request.getRequestDispatcher(Config.LAYOUT).forward(request, response);
+    }
+
+    private void revenue(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String type = request.getParameter("type");
+        double revenue = orderFacade.revenue(type);
+        request.setAttribute("revenue", revenue);
+        request.setAttribute("currentType", type);
+        request.getRequestDispatcher("/order/index.do").forward(request, response);
     }
 
 }

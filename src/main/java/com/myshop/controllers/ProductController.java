@@ -8,6 +8,7 @@ import com.myshop.facade.CategoryFacade;
 import com.myshop.facade.ProductFacade;
 import com.myshop.models.Category;
 import com.myshop.models.Product;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -15,6 +16,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 /**
  *
@@ -47,6 +49,13 @@ public class ProductController extends HttpServlet {
                 break;
             case "delete":
                 delete(request, response);
+                break;
+            case "create":
+                if ("POST".equalsIgnoreCase(method)) {
+                    create(request, response);
+                } else {
+                    showCreatePage(request, response);
+                }
                 break;
             default:
                 index(request, response);
@@ -161,22 +170,25 @@ public class ProductController extends HttpServlet {
     }// </editor-fold>
 
     private void edit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String returnUrl = request.getParameter("returnUrl");
+
         int id = Integer.parseInt(request.getParameter("id"));
         String name = request.getParameter("name");
         String description = request.getParameter("description");
         double price = Double.parseDouble(request.getParameter("price"));
         double discount = Double.parseDouble(request.getParameter("discount"));
         int quantity = Integer.parseInt(request.getParameter("quantity"));
-        int categoryId = Integer.parseInt(request.getParameter("categoryId"));
-        String imagePath = request.getParameter("image");
 
+        int categoryId = Integer.parseInt(request.getParameter("categoryId"));
         Category category = categoryFacade.getById(categoryId);
+
+        String imagePath = request.getParameter("image");
 
         Product product = new Product(id, name, description, price, discount, quantity, imagePath, category);
 
         productFacade.updateProduct(product);
 
-        request.getRequestDispatcher("/product/index.do?page=1").forward(request, response);
+        request.getRequestDispatcher(returnUrl).forward(request, response);
     }
 
     private void showEditPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -193,8 +205,73 @@ public class ProductController extends HttpServlet {
         request.getRequestDispatcher(Config.LAYOUT).forward(request, response);
     }
 
-    private void delete(HttpServletRequest request, HttpServletResponse response) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    private void delete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        String returnUrl = request.getParameter("returnUrl");
+
+        productFacade.deleteProduct(id);
+        request.getRequestDispatcher(returnUrl).forward(request, response);
     }
 
+    private void create(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        request.setCharacterEncoding("UTF-8");
+        String returnUrl = request.getParameter("returnUrl");
+        try {
+            // 1. Read form fields
+            String name = request.getParameter("name");
+            String description = request.getParameter("description");
+            double price = Double.parseDouble(request.getParameter("price"));
+            String image = request.getParameter("image");
+            double discount = Double.parseDouble(request.getParameter("discount"));
+            int quantity = Integer.parseInt(request.getParameter("quantity"));
+            int categoryId = Integer.parseInt(request.getParameter("categoryId"));
+
+            // 2. Create product object
+            Product product = new Product();
+            product.setName(name);
+            product.setDescription(description);
+            product.setPrice(price);
+            product.setDiscount(discount);
+            product.setQuantity(quantity);
+
+            // 3. Set category
+            Category category = new Category();
+            category.setId(categoryId);
+            product.setCategory(category);
+
+            // 4. Handle image upload
+            product.setImagePath("/images/products/" + image);
+
+            // 5. Insert using your existing DAO (unchanged)
+            boolean success = productFacade.addProduct(product);
+
+            if (success) {
+                request.getRequestDispatcher(returnUrl).forward(request, response);
+            } else {
+                request.setAttribute("message", "Failed to create product.");
+                showCreatePage(request, response);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("message", "Error: " + e.getMessage());
+            showCreatePage(request, response);
+        }
+    }
+
+    private void showCreatePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            String returnUrl = request.getParameter("returnUrl");
+            request.setAttribute("returnUrl", returnUrl);
+
+            List<Category> categories = categoryFacade.getAll();
+            request.setAttribute("categories", categories);
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("message", "Error: " + e.getMessage());
+        }
+        request.getRequestDispatcher(Config.LAYOUT).forward(request, response);
+    }
 }

@@ -56,7 +56,7 @@ public class ProductFacade {
         if (products == null) {
             products = getAll();
         }
-        products.sort(Comparator.comparingDouble(Product::getPrice));
+        products.sort(Comparator.comparingDouble(Product::getPriceAfterDiscount));
         if (desc) {
             Collections.reverse(products);
         }

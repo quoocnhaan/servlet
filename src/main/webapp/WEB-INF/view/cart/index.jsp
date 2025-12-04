@@ -4,7 +4,9 @@
 <div class="container mt-4">
 
     <h2 class="mb-4">Your Shopping Cart</h2>
-
+    <c:if test="${message != null}">
+        <div class="alert alert-danger">${message}</div>
+    </c:if>
     <c:if test="${empty cartItems}">
         <div class="alert alert-info">Your cart is empty.</div>
         <a href="<c:url value='/product/index.do?page=1'/>" class="btn btn-primary mt-3">

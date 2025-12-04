@@ -14,6 +14,7 @@ package com.myshop.dao;
  * and open the template in the editor.
  */
 import com.myshop.facade.ProductFacade;
+import com.myshop.facade.UserFacade;
 import com.myshop.models.Order;
 import com.myshop.models.OrderItem;
 import com.myshop.models.Product;
@@ -33,7 +34,9 @@ import java.util.List;
  */
 public class OrderDAO {
 
-    public void insert(Order order) throws ClassNotFoundException, SQLException {
+    private final UserFacade userFacade = new UserFacade();
+
+    public void insert(Order order) {
         Connection con = null;
         PreparedStatement stmHeader = null;
         PreparedStatement stmDetail = null;
@@ -72,8 +75,11 @@ public class OrderDAO {
             }
 
             con.commit();
+            stmHeader.close();
+            stmDetail.close();
+            con.close();
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             if (con != null) {
                 try {
                     con.rollback();
@@ -81,21 +87,10 @@ public class OrderDAO {
                     e.printStackTrace();
                 }
             }
-            throw ex;
-        } finally {
-            if (stmHeader != null) {
-                stmHeader.close();
-            }
-            if (stmDetail != null) {
-                stmDetail.close();
-            }
-            if (con != null) {
-                con.close();
-            }
         }
     }
 
-    public boolean updateStatus(int orderId, String status) throws ClassNotFoundException, SQLException {
+    public boolean updateStatus(int orderId, String status) {
         String sql = "UPDATE Orders SET status = ? WHERE id = ?";
 
         try (Connection con = DBContext.getConnection(); PreparedStatement stm = con.prepareStatement(sql)) {
@@ -108,11 +103,14 @@ public class OrderDAO {
                 throw new SQLException("Updating order status failed, no rows affected.");
             }
             return rows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
     // GET by ID
-    public Order getById(int orderId) throws ClassNotFoundException, SQLException {
+    public Order getById(int orderId) {
         String sqlHeader = "SELECT * FROM Orders WHERE id = ?";
         String sqlDetail = "SELECT * FROM OrderItems WHERE orderId = ?";
         Order order = null;
@@ -127,8 +125,8 @@ public class OrderDAO {
                     order.setId(rsHeader.getInt("id"));
                     order.setStatus(rsHeader.getString("status"));
 
-                    User user = new User();
-                    user.setId(rsHeader.getInt("userId"));
+                    int userId = rsHeader.getInt("userId");
+                    User user = userFacade.getUserById(userId);
                     order.setUser(user);
 
                     order.setStatus(rsHeader.getString("status"));
@@ -154,13 +152,14 @@ public class OrderDAO {
                     }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
         return order;
     }
 
     // GET all orders
-    public List<Order> getAll() throws ClassNotFoundException, SQLException {
+    public List<Order> getAll() {
         List<Order> orders = new ArrayList<>();
         String sqlHeader = "SELECT id FROM Orders";
 
@@ -170,7 +169,47 @@ public class OrderDAO {
                 int orderId = rs.getInt("id");
                 orders.add(getById(orderId)); // reuse getById
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return orders;
+    }
+
+    public double getRevenue(String type) {
+        double revenue = 0;
+        String sql = "";
+
+        switch (type) {
+            case "day":
+                sql = "SELECT SUM(oi.UnitPrice * oi.Quantity) AS revenue FROM Orders o JOIN OrderItems oi ON o.Id = oi.OrderId WHERE CONVERT(date, o.OrderDate) = CONVERT(date, GETDATE()) ";
+                break;
+
+            case "week":
+                sql = "SELECT SUM(oi.UnitPrice * oi.Quantity) AS revenue FROM Orders o JOIN OrderItems oi ON o.Id = oi.OrderId WHERE DATEPART(WEEK, o.OrderDate) = DATEPART(WEEK, GETDATE()) AND DATEPART(YEAR, o.OrderDate) = DATEPART(YEAR, GETDATE())";
+                break;
+
+            case "month":
+                sql = "SELECT SUM(oi.UnitPrice * oi.Quantity) AS revenue FROM Orders o JOIN OrderItems oi ON o.Id = oi.OrderId WHERE MONTH(o.OrderDate) = MONTH(GETDATE()) AND YEAR(o.OrderDate) = YEAR(GETDATE())";
+                break;
+
+            case "year":
+                sql = "SELECT SUM(oi.UnitPrice * oi.Quantity) AS revenue FROM Orders o JOIN OrderItems oi ON o.Id = oi.OrderId WHERE YEAR(o.OrderDate) = YEAR(GETDATE())";
+                break;
+
+            default:
+                return 0;
+        }
+
+        try (Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                revenue = rs.getDouble("revenue");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return revenue;
     }
 }

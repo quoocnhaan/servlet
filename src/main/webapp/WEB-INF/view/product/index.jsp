@@ -3,6 +3,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <!-- Search & Filter Form -->
+<c:if test="${message != null}">
+    <div class="alert alert-danger">${message}</div>
+</c:if>
 <form method="get" action="<c:url value='/product/index.do'/>" class="row g-3 mb-4">
     <input type="hidden" name="page" value="1">
     <div class="col-md-4">
@@ -31,9 +34,17 @@
         </div>
     </form>
 
-    <!-- Product Cards -->
-    <!-- Product Cards -->
-    <div class="row">
+<c:if test="${user.role == 'admin'}">
+    <div class="mb-3 text-end">
+        <c:url var="createUrl" value="/product/create.do">
+            <c:param name="returnUrl" value="${pageUrl}" />
+        </c:url>
+        <a href="${createUrl}" class="btn btn-success">+ Add New Product</a>
+    </div>
+</c:if>
+
+<!-- Product Cards -->
+<div class="row">
     <c:forEach var="product" items="${products}">
         <div class="col-md-3 mb-4">
             <div class="card h-100">
@@ -69,12 +80,22 @@
                     <!-- Conditional buttons -->
                     <c:choose>
                         <c:when test="${user.role == 'admin'}">
-                            <a href="<c:url value='/product/edit.do?id=${product.id}&returnUrl=${pageUrl}'/>" class="btn btn-primary mb-1">Edit</a>
-                            <a href="<c:url value='/product/delete.do?id=${product.id}'/>"
+                            <c:url var="editUrl" value="/product/edit.do">
+                                <c:param name="id" value="${product.id}" />
+                                <c:param name="returnUrl" value="${pageUrl}" />
+                            </c:url>
+                            <a href="${editUrl}" class="btn btn-primary mb-1">Edit</a>
+
+                            <c:url var="deleteUrl" value="/product/delete.do">
+                                <c:param name="id" value="${product.id}" />
+                                <c:param name="returnUrl" value="${pageUrl}" />
+                            </c:url>
+                            <a href="${deleteUrl}"
                                class="btn btn-danger"
                                onclick="return confirm('Are you sure you want to delete ${product.name}?');">
                                 Delete
                             </a>
+
                         </c:when>
                         <c:otherwise>
                             <a href="<c:url value='/cart/add.do?id=${product.id}'/>" 

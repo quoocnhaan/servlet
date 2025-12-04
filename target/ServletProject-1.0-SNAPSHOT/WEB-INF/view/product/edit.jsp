@@ -9,8 +9,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <h2>Edit Product</h2>
-
-<form method="post" action="<c:url value='/product/edit.do'/>">
+<c:if test="${message != null}">
+    <div class="alert alert-danger">${message}</div>
+</c:if>
+<form method="post" action="<c:url value='/product/edit.do?returnUrl=${returnUrl}'/>">
     <input type="hidden" name="id" value="${product.id}" />
 
     <div class="mb-3">
@@ -54,12 +56,15 @@
         <img src="<c:url value='${product.imagePath}'/>" alt="${product.name}" width="150" />
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Upload New Image</label>
-        <input type="file" name="image" class="form-control" />
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Image Path</label>
+        <input type="text" name="image" value='${product.imagePath}' class="form-control" placeholder="example.jpg">
     </div>
 
-    <button type="submit" class="btn btn-primary">Update Product</button>
-    <a href="<c:url value='${returnUrl}'/>" class="btn btn-secondary">Cancel</a>
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary">Update Product</button>
+        <a href="<c:url value='${returnUrl}'/>" class="btn btn-secondary">Cancel</a>
+    </div>
+
 </form>
 

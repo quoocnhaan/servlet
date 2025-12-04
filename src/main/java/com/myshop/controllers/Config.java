@@ -15,8 +15,8 @@ public class Config {
     public static final int PAGESIZE = 8;
     public static final String ADMIN = "admin";
     public static final String CUSTOMER = "customer";
-    public static final String NEW = "new";
-    public static final String DELIVERED = "delivered";
-    public static final String PAIED = "paied";
+    public static final String NEW = "New";
+    public static final String DELIVERED = "Shipped";
+    public static final String PAIED = "Paid";
 
 }

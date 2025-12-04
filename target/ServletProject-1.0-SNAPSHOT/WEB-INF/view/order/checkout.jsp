@@ -10,7 +10,9 @@
 <div class="container my-4">
 
     <h3 class="mb-4">Checkout</h3>
-
+    <c:if test="${message != null}">
+        <div class="alert alert-danger">${message}</div>
+    </c:if>
     <form action="<c:url value='/order/checkout.do' />" method="post">
 
         <div class="row">

@@ -4,6 +4,10 @@
 
 <div class="container mt-4">
     <div class="row">
+
+        <c:if test="${message != null}">
+            <div class="alert alert-danger">${message}</div>
+        </c:if>
         <!-- Product Image -->
         <div class="col-md-5 position-relative">
             <img src="<c:url value='${product.imagePath}'/>" class="img-fluid rounded" alt="${product.name}">

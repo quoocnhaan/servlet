@@ -25,44 +25,44 @@ public class OrderFacade {
     /**
      * Create a new order
      */
-    public void createOrder(Order order) throws ClassNotFoundException, SQLException {
+    public void createOrder(Order order) {
         if (order == null || order.getItems() == null || order.getItems().isEmpty()) {
-            throw new IllegalArgumentException("Order or order items cannot be null/empty");
+            orderDAO.insert(order);
         }
-        orderDAO.insert(order);
     }
 
     /**
      * Update only the status of an order
      */
-    public boolean updateOrderStatus(int orderId, String status) throws ClassNotFoundException, SQLException {
-        if (status == null || status.isEmpty()) {
-            throw new IllegalArgumentException("Status cannot be null or empty");
-        }
+    public boolean updateOrderStatus(int orderId, String status) {
         return orderDAO.updateStatus(orderId, status);
     }
 
     /**
      * Get a single order by ID
      */
-    public Order getOrderById(int orderId) throws ClassNotFoundException, SQLException {
+    public Order getOrderById(int orderId) {
         return orderDAO.getById(orderId);
     }
 
     /**
      * Get all orders
      */
-    public List<Order> getAllOrders() throws ClassNotFoundException, SQLException {
+    public List<Order> getAllOrders() {
         return orderDAO.getAll();
     }
 
     /**
      * Example business method: get orders by status
      */
-    public List<Order> getOrdersByStatus(String status) throws ClassNotFoundException, SQLException {
+    public List<Order> getOrdersByStatus(String status) {
         List<Order> allOrders = orderDAO.getAll();
         return allOrders.stream()
                 .filter(order -> order.getStatus().equalsIgnoreCase(status))
                 .toList();
+    }
+
+    public double revenue(String type) {
+        return orderDAO.getRevenue(type);
     }
 }
