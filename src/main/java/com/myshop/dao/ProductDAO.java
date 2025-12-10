@@ -55,6 +55,41 @@ public class ProductDAO {
         return products;
     }
 
+    public List<Product> getNewArrivals() {
+        List<Product> products = new ArrayList<>();
+        String sql = "SELECT TOP 5 p.*, c.Id as CategoryId, c.Name as CategoryName \n"
+                + "FROM Products p LEFT JOIN Categories c ON p.CategoryId = c.Id\n"
+                + "ORDER BY CreatedAt DESC";
+
+        try (Connection conn = DBContext.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Category category = null;
+                int categoryId = rs.getInt("CategoryId");
+                if (!rs.wasNull()) {
+                    category = new Category(categoryId, rs.getString("CategoryName"));
+                }
+
+                Product product = new Product(
+                        rs.getInt("Id"),
+                        rs.getString("Name"),
+                        rs.getString("Description"),
+                        rs.getDouble("Price"),
+                        rs.getDouble("Discount"),
+                        rs.getInt("Quantity"),
+                        rs.getString("ImagePath"),
+                        category,
+                        rs.getTimestamp("CreatedAt")
+                );
+                products.add(product);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return products;
+    }
+
     // Get product by ID
     public Product getProductById(int id) {
         Product product = null;

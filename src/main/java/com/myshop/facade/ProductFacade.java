@@ -26,6 +26,10 @@ public class ProductFacade {
         return productDAO.getAllProducts();
     }
 
+    public List<Product> getNewArrivals() {
+        return productDAO.getNewArrivals();
+    }
+
     // Search by name
     public List<Product> searchByName(List<Product> products, String keyword) {
         if (products == null) {

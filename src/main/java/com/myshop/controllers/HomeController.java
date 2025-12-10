@@ -4,7 +4,10 @@
  */
 package com.myshop.controllers;
 
+import com.myshop.facade.ProductFacade;
+import com.myshop.models.Product;
 import java.io.IOException;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,15 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "HomeController", urlPatterns = {"/home"})
 public class HomeController extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+    private final ProductFacade productFacade = new ProductFacade();
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -45,7 +41,8 @@ public class HomeController extends HttpServlet {
 
     protected void index(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        List<Product> products = productFacade.getNewArrivals();
+        request.setAttribute("newProducts", products);
         request.getRequestDispatcher(Config.LAYOUT).forward(request, response);
     }
 

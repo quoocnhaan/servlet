@@ -15,7 +15,6 @@ com\myshop\dao\CategoryDAO.class
 com\myshop\models\Order.class
 com\myshop\models\Item.class
 com\myshop\models\User.class
-com\myshop\controllers\CategoryController.class
 com\myshop\dao\OrderDAO.class
 com\myshop\controllers\HomeController.class
 com\myshop\controllers\Config.class

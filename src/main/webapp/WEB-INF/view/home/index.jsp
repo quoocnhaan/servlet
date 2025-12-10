@@ -82,15 +82,15 @@
                         <c:choose>
                             <c:when test="${product.discount > 0}">
                                 <p class="text-muted mb-1">
-                                    <s>$<fmt:formatNumber value="${product.price}" type="currency"/></s>
+                                    <s><fmt:formatNumber value="${product.price}" type="currency"/></s>
                                 </p>
                                 <p class="fw-bold mt-auto mb-1">
-                                    $<fmt:formatNumber value="${product.priceAfterDiscount}" type="currency"/>
+                                    <fmt:formatNumber value="${product.priceAfterDiscount}" type="currency"/>
                                 </p>
                             </c:when>
                             <c:otherwise>
                                 <p class="fw-bold mt-auto mb-1">
-                                    $<fmt:formatNumber value="${product.price}" type="currency"/>
+                                    <fmt:formatNumber value="${product.price}" type="currency"/>
                                 </p>
                             </c:otherwise>
                         </c:choose>
