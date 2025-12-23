@@ -7,139 +7,134 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<div class="container my-4">
+<main class="container checkout-page">
+    <nav class="breadcrumbs">
+        <a href="<c:url value='/cart/index.do'/>">Cart</a> <i class="fa-solid fa-chevron-right"></i> <span>Checkout</span>
+    </nav>
 
-    <h3 class="mb-4">Checkout</h3>
-    <c:if test="${message != null}">
-        <div class="alert alert-danger">${message}</div>
-    </c:if>
-    <form action="<c:url value='/order/checkout.do' />" method="post">
+    <div class="checkout-layout">
+        <div class="checkout-forms">
 
-        <div class="row">
-
-            <!-- LEFT COLUMN: BILLING -->
-            <div class="col-md-7">
-
-                <!-- Billing Info -->
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">Billing Information</h5>
+            <section class="checkout-section">
+                <div class="section-header">
+                    <span class="step-number">1</span>
+                    <h2>Shipping Information</h2>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group full">
+                        <label>Full Name</label>
+                        <input type="text" placeholder="John Enthusiast">
                     </div>
-
-                    <div class="card-body">
-
-                        <div class="mb-3">
-                            <label class="form-label">Full Name</label>
-                            <input type="text" name="fullName" class="form-control"
-                                   placeholder="Enter full name" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Phone Number</label>
-                            <input type="text" name="phone" class="form-control"
-                                   placeholder="Enter phone number" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Address</label>
-                            <input type="text" name="address" class="form-control"
-                                   placeholder="Enter delivery address" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Notes (optional)</label>
-                            <textarea name="notes" class="form-control" rows="2"></textarea>
-                        </div>
-
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" placeholder="john@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" placeholder="+1 (555) 000-0000">
+                    </div>
+                    <div class="form-group full">
+                        <label>Street Address</label>
+                        <input type="text" placeholder="123 Keyset Lane">
+                    </div>
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" placeholder="Mechanical City">
+                    </div>
+                    <div class="form-group">
+                        <label>Postal Code</label>
+                        <input type="text" placeholder="12345">
                     </div>
                 </div>
+            </section>
 
-                <!-- Payment -->
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">Payment Method</h5>
-                    </div>
-
-                    <div class="card-body">
-
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="payment" value="COD" id="cod" checked>
-                            <label class="form-check-label" for="cod">Cash on Delivery (COD)</label>
+            <section class="checkout-section">
+                <div class="section-header">
+                    <span class="step-number">2</span>
+                    <h2>Payment Method</h2>
+                </div>
+                <div class="payment-options">
+                    <label class="payment-card active">
+                        <input type="radio" name="payment" checked>
+                        <div class="card-content">
+                            <i class="fa-solid fa-credit-card"></i>
+                            <span>Credit Card</span>
                         </div>
-
-                        <div class="form-check mt-2">
-                            <input class="form-check-input" type="radio" name="payment" value="Card" id="card">
-                            <label class="form-check-label" for="card">Credit / Debit Card</label>
+                    </label>
+                    <label class="payment-card">
+                        <input type="radio" name="payment">
+                        <div class="card-content">
+                            <i class="fa-brands fa-paypal"></i>
+                            <span>PayPal</span>
                         </div>
-
-                    </div>
+                    </label>
                 </div>
 
-            </div>
-
-            <!-- RIGHT COLUMN: CART ITEMS -->
-            <div class="col-md-5">
-
-                <div class="card shadow-sm">
-                    <div class="card-header">
-                        <h5 class="mb-0">Cart Summary</h5>
+                <div class="credit-card-form">
+                    <div class="form-group full">
+                        <label>Card Number</label>
+                        <div class="input-with-icon">
+<!--                            <i class="fa-solid fa-credit-card"></i>-->
+                            <input type="text" placeholder="0000 0000 0000 0000">
+                        </div>
                     </div>
+                    <div class="form-group">
+                        <label>Expiry Date</label>
+                        <input type="text" placeholder="MM/YY">
+                    </div>
+                    <div class="form-group">
+                        <label>CVV</label>
+                        <input type="text" placeholder="123">
+                    </div>
+                </div>
+            </section>
+        </div>
 
-                    <div class="card-body">
-
-                        <c:set var="grandTotal" value="0" />
-
-                        <!-- Loop items -->
+        <aside class="order-review-sidebar">
+            <form action="<c:url value='/order/checkout.do' />" method="post">
+                <div class="review-card">
+                    <h3>Order Review</h3>
+                    <div class="review-items-list">
                         <c:forEach items="${cartItems}" var="item">
-                            <div class="card mb-3 border-0 border-bottom pb-3">
-
-                                <div class="d-flex">
-
-                                    <!-- Product image -->
-                                    <img src="<c:url value='/${item.product.imagePath}'/>"
-                                         class="img-thumbnail me-3"
-                                         style="width: 70px; height: 70px; object-fit: cover;">
-
-                                    <!-- Product info -->
-                                    <div class="flex-grow-1">
-                                        <strong>${item.product.name}</strong><br>
-                                        Price:
-                                        <fmt:formatNumber value="${item.price}" type="currency" />
-                                        <br>
-                                        Qty: ${item.quantity}
+                            <div class="mini-item">
+                                <img src="<c:url value='/${item.product.imagePath}'/>" alt="Product">
+                                <div class="mini-details">
+                                    <p class="mini-name">${item.product.name}</p>
+                                    <div class="mini-price-row">
+                                        <div class="mini-qty-info">
+                                            <span class="mini-qty">Qty: ${item.quantity}</span>
+                                            <span class="mini-unit-price"><fmt:formatNumber value="${item.price}" type="currency" /></span>
+                                        </div>
+                                        <span class="mini-item-total"><fmt:formatNumber value="${item.total}" type="currency" /></span>
                                     </div>
-
-                                    <!-- Subtotal -->
-                                    <div class="text-end">
-                                        <fmt:formatNumber value="${item.total}" type="currency" />
-                                    </div>
-
                                 </div>
-
                             </div>
-
-                            <!-- Accumulate total -->
                         </c:forEach>
 
-                        <!-- Total -->
-                        <hr>
-                        <div class="d-flex justify-content-between">
-                            <strong>Total:</strong>
-                            <strong>
-                                <fmt:formatNumber value="${cart.total}" type="currency" />
-                            </strong>
+                        <div class="summary-totals">
+                            <div class="summary-row">
+                                <span>Subtotal</span>
+                                <span><fmt:formatNumber value="${cart.total}" type="currency" /></span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Shipping</span>
+                                <span class="free-text">FREE</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total</span>
+                                <span><fmt:formatNumber value="${cart.total}" type="currency" /></span>
+                            </div>
                         </div>
 
-                        <!-- Checkout button -->
-                        <button type="submit" class="btn btn-primary w-100 mt-3">
-                            Confirm & Place Order
+                        <button class="place-order-btn">
+                            <i class="fa-solid fa-circle-check"></i> Complete Purchase
                         </button>
-
+                        <p class="secure-note"><i class="fa-solid fa-shield-halved"></i> 256-bit SSL Encrypted</p>
                     </div>
                 </div>
+            </form>
+        </aside>
+    </div>
+</main>
 
-            </div>
-        </div>
-    </form>
-</div>
 

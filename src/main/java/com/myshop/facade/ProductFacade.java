@@ -27,7 +27,25 @@ public class ProductFacade {
     }
 
     public List<Product> getNewArrivals() {
-        return productDAO.getNewArrivals();
+        return productDAO.getAllProducts()
+                .stream()
+                .filter(Product::isNewArrival)
+                .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
+                .collect(Collectors.toList());
+    }
+
+    public List<Product> getDiscountProducts() {
+        return productDAO.getAllProducts()
+                .stream()
+                .filter(p -> p.getDiscount() > 0)
+                .collect(Collectors.toList());
+    }
+
+    public int getOutOfStock() {
+        return (int) productDAO.getAllProducts()
+                .stream()
+                .filter(p -> p.getQuantity() == 0)
+                .count();
     }
 
     // Search by name

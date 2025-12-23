@@ -41,8 +41,11 @@ public class HomeController extends HttpServlet {
 
     protected void index(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<Product> products = productFacade.getNewArrivals();
-        request.setAttribute("newProducts", products);
+        List<Product> newProducts = productFacade.getNewArrivals();
+        List<Product> discountProducts = productFacade.getDiscountProducts();
+        request.setAttribute("newProducts", newProducts);
+        request.setAttribute("discountProducts", discountProducts);
+        request.setAttribute("nav", "home");
         request.getRequestDispatcher(Config.LAYOUT).forward(request, response);
     }
 

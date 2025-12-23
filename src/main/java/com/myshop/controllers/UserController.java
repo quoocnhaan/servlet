@@ -38,7 +38,6 @@ public class UserController extends HttpServlet {
         String method = request.getMethod();
         String controller = (String) request.getAttribute("controller");
         String action = (String) request.getAttribute("action");
-
         switch (action) {
             case "login":
                 if ("POST".equalsIgnoreCase(method)) {
@@ -76,28 +75,36 @@ public class UserController extends HttpServlet {
             User user = userFacade.login(username, password);
             if (user == null) {
                 request.setAttribute("message", "Please check your email and password");
+                request.setAttribute("javax.servlet.error.status_code", 401);
+                request.getRequestDispatcher("/WEB-INF/view/error/index.jsp").forward(request, response);
             } else {
+                System.out.println("login success");
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
+                if (user.getRole().equalsIgnoreCase("admin")) {
+                    response.sendRedirect(request.getContextPath() + "/admin/product.do");
+                } else {
+                    response.sendRedirect(request.getContextPath());
+                }
             }
 
         } catch (Exception e) {
             request.setAttribute("message", e.getMessage());
             e.printStackTrace();
+            System.out.println("have errors");
+            request.getRequestDispatcher("/WEB-INF/view/error/index.jsp").forward(request, response);
         }
-
-        request.getRequestDispatcher("/").forward(request, response);
-
     }
 
     private void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String referer = request.getHeader("Referer");
         HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        String role = user.getRole();
         session.invalidate();
-        if (referer != null) {
+        if (referer != null && !role.equalsIgnoreCase("admin")) {
             response.sendRedirect(referer);
         } else {
-            // fallback if no referer header exists
             response.sendRedirect(request.getContextPath() + "/home/index.do");
         }
     }
@@ -112,7 +119,7 @@ public class UserController extends HttpServlet {
 
             if (!password.equals(confirmPassword)) {
                 request.setAttribute("message", "Passwords do not match.");
-                request.getRequestDispatcher("/").forward(request, response);
+                request.getRequestDispatcher("/WEB-INF/view/error/index.jsp").forward(request, response);
                 return;
             }
 
@@ -120,7 +127,7 @@ public class UserController extends HttpServlet {
 
             if (userFacade.getUserByUsername(username) != null) {
                 request.setAttribute("message", "Username is already taken.");
-                request.getRequestDispatcher(Config.LAYOUT).forward(request, response);
+                request.getRequestDispatcher("/WEB-INF/view/error/index.jsp").forward(request, response);
                 return;
             }
 
@@ -139,11 +146,11 @@ public class UserController extends HttpServlet {
                 User currentUser = userFacade.getUserByUsername(username);
                 session.setAttribute("user", currentUser);
             }
+            response.sendRedirect(request.getContextPath() + "/home/index.do");
         } catch (Exception e) {
             request.setAttribute("message", e.getMessage());
-            request.getRequestDispatcher(Config.LAYOUT).forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/view/error/index.jsp").forward(request, response);
         }
-        request.getRequestDispatcher("/").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

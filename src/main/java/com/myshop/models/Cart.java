@@ -63,6 +63,10 @@ public class Cart {
     }
 
     public int getSize() {
-        return map.size();
+        int size = 0;
+        for (Item item : getItems()) {
+            size += item.getQuantity();
+        }
+        return size;
     }
 }

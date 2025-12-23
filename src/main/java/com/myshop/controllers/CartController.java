@@ -37,6 +37,7 @@ public class CartController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String controller = (String) request.getAttribute("controller");
         String action = (String) request.getAttribute("action");
+        request.setAttribute("nav", "cart");
         switch (action) {
             case "index":
                 index(request, response);
@@ -103,19 +104,19 @@ public class CartController extends HttpServlet {
                 cart.add(id, Integer.parseInt(qtyStr));
             }
 
+            if (referer != null) {
+                response.sendRedirect(referer);
+            } else {
+                // fallback if no referer header exists
+                response.sendRedirect(request.getContextPath() + "/home/index.do");
+            }
+
         } catch (SQLException ex) {
             //Lưu thông báo lỗi vào request để truyền thông báo lỗi cho view toy.jsp
             request.setAttribute("message", ex.getMessage());
             //In chi tiết lỗi
             ex.printStackTrace();
-        }
-        //vẫn ở lại trang /home/index.do
-        //request.getRequestDispatcher("/home/index.do").forward(request, response);
-        if (referer != null) {
-            response.sendRedirect(referer);
-        } else {
-            // fallback if no referer header exists
-            response.sendRedirect(request.getContextPath() + "/home/index.do");
+            request.getRequestDispatcher("/WEB-INF/view/error/index.jsp").forward(request, response);
         }
     }
 
@@ -131,7 +132,7 @@ public class CartController extends HttpServlet {
         cart.remove(id);
 
         //vẫn ở lại trang giỏ hàng /cart/index.do
-        request.getRequestDispatcher("/cart/index.do").forward(request, response);
+        response.sendRedirect(request.getContextPath() + "/cart/index.do");
     }
 
     protected void empty(HttpServletRequest request, HttpServletResponse response)
@@ -143,7 +144,7 @@ public class CartController extends HttpServlet {
         //remove item
         cart.empty();
         //vẫn ở lại trang giỏ hàng /cart/index.do
-        request.getRequestDispatcher("/cart/index.do").forward(request, response);
+        response.sendRedirect(request.getContextPath() + "/cart/index.do");
     }
 
     protected void update(HttpServletRequest request, HttpServletResponse response)
@@ -160,7 +161,7 @@ public class CartController extends HttpServlet {
         cart.update(id, qty);
 
         //vẫn ở lại trang giỏ hàng /cart/index.do
-        request.getRequestDispatcher("/cart/index.do").forward(request, response);
+        response.sendRedirect(request.getContextPath() + "/cart/index.do");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -33,6 +33,7 @@ public class ProductController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String action = (String) request.getAttribute("action");
         String method = request.getMethod();
+        request.setAttribute("nav", "shop");
         switch (action) {
             case "index":
                 index(request, response);
@@ -41,21 +42,13 @@ public class ProductController extends HttpServlet {
                 detail(request, response);
                 break;
             case "edit":
-                if ("POST".equalsIgnoreCase(method)) {
-                    edit(request, response);
-                } else {
-                    showEditPage(request, response);
-                }
+                edit(request, response);
                 break;
             case "delete":
                 delete(request, response);
                 break;
             case "create":
-                if ("POST".equalsIgnoreCase(method)) {
-                    create(request, response);
-                } else {
-                    showCreatePage(request, response);
-                }
+                create(request, response);
                 break;
             default:
                 index(request, response);
@@ -66,57 +59,118 @@ public class ProductController extends HttpServlet {
             throws ServletException, IOException {
 
         try {
-            List<Product> products = null;
-            int totalProducts = 0;
-            int totalPages = 0;
-
             List<Category> categories = categoryFacade.getAll();
             request.setAttribute("categories", categories);
 
             String categoryStr = request.getParameter("category");
             String search = request.getParameter("search");
             String sort = request.getParameter("sort");
+            String pageStr = request.getParameter("page");
 
-            int page = Integer.parseInt((String) request.getAttribute("page"));
+            int page = 1;
+            if (pageStr != null && !pageStr.isBlank()) {
+                page = Integer.parseInt(pageStr);
+            }
             request.setAttribute("currentPage", page);
 
-            if ((categoryStr != null && !categoryStr.isBlank()) || (search != null && !search.isBlank()) || (sort != null && !sort.isBlank())) {
-                if (!categoryStr.isBlank()) {
-                    int categoryId = Integer.parseInt(categoryStr);
-                    if (categoryId != 0) {
-                        products = productFacade.filterByCategory(products, categoryId);
-                    }
-                }
-                if (!search.isBlank()) {
-                    products = productFacade.searchByName(products, search);
-                    request.setAttribute("search", search);
-                }
+            List<Product> products = productFacade.getAll();
 
-                if (!sort.isBlank()) {
-                    products = productFacade.sortByPrice(products, sort.equalsIgnoreCase("desc"));
-                    request.setAttribute("sort", sort);
+            if (categoryStr != null && !categoryStr.isBlank()) {
+                int categoryId = Integer.parseInt(categoryStr);
+                if (categoryId != 0) {
+                    products = productFacade.filterByCategory(products, categoryId);
                 }
-                totalProducts = products.size();
-                products = productFacade.paginate(products, page);
-            } else {
-                products = productFacade.paginate(page);
-                totalProducts = productFacade.getAll().size();
+                request.setAttribute("category", categoryStr);
             }
-            totalPages = (int) Math.ceil((double) totalProducts / Config.PAGESIZE);
-            request.setAttribute("totalPages", totalPages);
+
+            if (search != null && !search.isBlank()) {
+                products = productFacade.searchByName(products, search);
+                request.setAttribute("search", search);
+            }
+
+            if (sort != null && !sort.isBlank()) {
+                boolean desc = sort.equalsIgnoreCase("desc");
+                products = productFacade.sortByPrice(products, desc);
+                request.setAttribute("sort", sort);
+            }
+
+            int totalProducts = products.size();
+            int totalPages = (int) Math.ceil((double) totalProducts / Config.PAGESIZE);
+
+            products = productFacade.paginate(products, page);
 
             request.setAttribute("products", products);
+            request.setAttribute("totalPages", totalPages);
 
-            String pageUrl = "/product/index.do?page=" + page + "&search=" + search + "&category=" + categoryStr + "&sort=" + sort;
+            String pageUrl = "/product/index.do"
+                    + "?search=" + (search != null ? search : "")
+                    + "&category=" + (categoryStr != null ? categoryStr : "")
+                    + "&sort=" + (sort != null ? sort : "");
+
             request.setAttribute("pageUrl", pageUrl);
 
         } catch (Exception ex) {
-            request.setAttribute("message", ex.getMessage());
             ex.printStackTrace();
+            request.setAttribute("message", ex.getMessage());
         }
+
         request.getRequestDispatcher(Config.LAYOUT).forward(request, response);
     }
 
+//    protected void index(HttpServletRequest request, HttpServletResponse response)
+//            throws ServletException, IOException {
+//
+//        try {
+//            List<Product> products = null;
+//            int totalProducts = 0;
+//            int totalPages = 0;
+//
+//            List<Category> categories = categoryFacade.getAll();
+//            request.setAttribute("categories", categories);
+//
+//            String categoryStr = request.getParameter("category");
+//            String search = request.getParameter("search");
+//            String sort = request.getParameter("sort");
+//
+//            int page = Integer.parseInt((String) request.getAttribute("page"));
+//            request.setAttribute("currentPage", page);
+//
+//            if ((categoryStr != null && !categoryStr.isBlank()) || (search != null && !search.isBlank()) || (sort != null && !sort.isBlank())) {
+//                if (!categoryStr.isBlank()) {
+//                    int categoryId = Integer.parseInt(categoryStr);
+//                    if (categoryId != 0) {
+//                        products = productFacade.filterByCategory(products, categoryId);
+//                    }
+//                }
+//                if (!search.isBlank()) {
+//                    products = productFacade.searchByName(products, search);
+//                    request.setAttribute("search", search);
+//                }
+//
+//                if (!sort.isBlank()) {
+//                    products = productFacade.sortByPrice(products, sort.equalsIgnoreCase("desc"));
+//                    request.setAttribute("sort", sort);
+//                }
+//                totalProducts = products.size();
+//                products = productFacade.paginate(products, page);
+//            } else {
+//                products = productFacade.paginate(page);
+//                totalProducts = productFacade.getAll().size();
+//            }
+//            totalPages = (int) Math.ceil((double) totalProducts / Config.PAGESIZE);
+//            request.setAttribute("totalPages", totalPages);
+//
+//            request.setAttribute("products", products);
+//
+//            String pageUrl = "/product/index.do?page=" + page + "&search=" + search + "&category=" + categoryStr + "&sort=" + sort;
+//            request.setAttribute("pageUrl", pageUrl);
+//
+//        } catch (Exception ex) {
+//            request.setAttribute("message", ex.getMessage());
+//            ex.printStackTrace();
+//        }
+//        request.getRequestDispatcher(Config.LAYOUT).forward(request, response);
+//    }
     protected void detail(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -170,39 +224,32 @@ public class ProductController extends HttpServlet {
     }// </editor-fold>
 
     private void edit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String returnUrl = request.getParameter("returnUrl");
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
+            String name = request.getParameter("name");
+            String description = request.getParameter("description");
+            double price = Double.parseDouble(request.getParameter("price"));
+            double discount = Double.parseDouble(request.getParameter("discount"));
+            int quantity = Integer.parseInt(request.getParameter("quantity"));
 
-        int id = Integer.parseInt(request.getParameter("id"));
-        String name = request.getParameter("name");
-        String description = request.getParameter("description");
-        double price = Double.parseDouble(request.getParameter("price"));
-        double discount = Double.parseDouble(request.getParameter("discount"));
-        int quantity = Integer.parseInt(request.getParameter("quantity"));
+            int categoryId = Integer.parseInt(request.getParameter("categoryId"));
+            Category category = categoryFacade.getById(categoryId);
 
-        int categoryId = Integer.parseInt(request.getParameter("categoryId"));
-        Category category = categoryFacade.getById(categoryId);
+            String imagePath = request.getParameter("image");
 
-        String imagePath = request.getParameter("image");
+            Product product = new Product(id, name, description, price, discount, quantity, imagePath, category);
 
-        Product product = new Product(id, name, description, price, discount, quantity, imagePath, category);
+            boolean success = productFacade.updateProduct(product);
 
-        productFacade.updateProduct(product);
-
-        request.getRequestDispatcher(returnUrl).forward(request, response);
-    }
-
-    private void showEditPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        String returnUrl = request.getParameter("returnUrl");
-
-        Product product = productFacade.getProductById(id);
-        List<Category> categories = categoryFacade.getAll();
-
-        request.setAttribute("categories", categories);
-        request.setAttribute("product", product);
-        request.setAttribute("returnUrl", returnUrl);
-
-        request.getRequestDispatcher(Config.LAYOUT).forward(request, response);
+            if (!success) {
+                request.getSession().setAttribute("message", "Failed to create product.");
+            }
+            response.sendRedirect(request.getContextPath() + "/admin/product.do");
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.getSession().setAttribute("message", "Error: " + e.getMessage());
+            request.getRequestDispatcher("/WEB-INF/view/error/index.jsp").forward(request, response);
+        }
     }
 
     private void delete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -217,7 +264,6 @@ public class ProductController extends HttpServlet {
             throws ServletException, IOException {
 
         request.setCharacterEncoding("UTF-8");
-        String returnUrl = request.getParameter("returnUrl");
         try {
             // 1. Read form fields
             String name = request.getParameter("name");
@@ -247,31 +293,15 @@ public class ProductController extends HttpServlet {
             // 5. Insert using your existing DAO (unchanged)
             boolean success = productFacade.addProduct(product);
 
-            if (success) {
-                request.getRequestDispatcher(returnUrl).forward(request, response);
-            } else {
-                request.setAttribute("message", "Failed to create product.");
-                showCreatePage(request, response);
+            if (!success) {
+                request.getSession().setAttribute("message", "Failed to create product.");
             }
+            response.sendRedirect(request.getContextPath() + "/admin/product.do");
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("message", "Error: " + e.getMessage());
-            showCreatePage(request, response);
+            request.getSession().setAttribute("message", "Error: " + e.getMessage());
+            request.getRequestDispatcher("/WEB-INF/view/error/index.jsp").forward(request, response);
         }
-    }
-
-    private void showCreatePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            String returnUrl = request.getParameter("returnUrl");
-            request.setAttribute("returnUrl", returnUrl);
-
-            List<Category> categories = categoryFacade.getAll();
-            request.setAttribute("categories", categories);
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("message", "Error: " + e.getMessage());
-        }
-        request.getRequestDispatcher(Config.LAYOUT).forward(request, response);
     }
 }

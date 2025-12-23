@@ -6,6 +6,7 @@ com\myshop\controllers\ProductController.class
 com\myshop\controllers\CartController.class
 com\myshop\facade\ProductFacade.class
 com\myshop\models\OrderItem.class
+com\myshop\controllers\AdminController.class
 com\myshop\util\DBContext.class
 com\myshop\util\Hasher.class
 com\myshop\facade\CategoryFacade.class

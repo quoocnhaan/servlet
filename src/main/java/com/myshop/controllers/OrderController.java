@@ -129,29 +129,31 @@ public class OrderController extends HttpServlet {
             order.setItems(items);
             orderFacade.createOrder(order);
             cart.empty();
+            request.getRequestDispatcher("/").forward(request, response);
         } catch (Exception e) {
             request.setAttribute("message", e.getMessage());
             e.printStackTrace();
+            request.getRequestDispatcher("/WEB-INF/view/error/index.jsp").forward(request, response);
         }
-        request.getRequestDispatcher("/").forward(request, response);
     }
 
     private void index(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             List<Order> orders = orderFacade.getAllOrders();
             request.setAttribute("orders", orders);
+            request.getRequestDispatcher(Config.LAYOUT).forward(request, response);
         } catch (Exception e) {
             request.setAttribute("message", e.getMessage());
             e.printStackTrace();
+            request.getRequestDispatcher("/WEB-INF/view/error/index.jsp").forward(request, response);
         }
-        request.getRequestDispatcher(Config.LAYOUT).forward(request, response);
     }
 
     private void edit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         String status = request.getParameter("status");
         orderFacade.updateOrderStatus(id, status);
-        request.getRequestDispatcher("/order/index.do").forward(request, response);
+        response.sendRedirect(request.getContextPath() + "/admin/order.do");
     }
 
     private void showCheckOutPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -166,7 +168,7 @@ public class OrderController extends HttpServlet {
         double revenue = orderFacade.revenue(type);
         request.setAttribute("revenue", revenue);
         request.setAttribute("currentType", type);
-        request.getRequestDispatcher("/order/index.do").forward(request, response);
+        request.getRequestDispatcher("/admin/order.do").forward(request, response);
     }
 
 }

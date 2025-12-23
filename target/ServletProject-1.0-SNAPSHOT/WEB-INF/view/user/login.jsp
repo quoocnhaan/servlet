@@ -7,54 +7,46 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <!-- The Login Modal -->
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-4">
+<div class="auth-body">
 
-            <h3 class="text-center mb-3">Login</h3>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="logo">
+                    Click<span>&</span>Clack
+                </div>
+                <h1>Welcome Back</h1>
+                <p>Log in to manage your orders and profile.</p>
+            </div>
 
-            <!-- Display error message -->
-            <c:if test="${message != null}">
-                <div class="alert alert-danger">${message}</div>
-            </c:if>
-
-            <form action="<c:url value='/user/login.do' />" method="post">
-
-                <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" 
-                           class="form-control" 
-                           id="username" 
-                           name="username" 
-                           placeholder="Enter username" 
-                           required>
+            <form action="<c:url value='/user/login.do' />" method="post" class="auth-form">
+                <div class="form-group">
+                    <label>Username</label>
+                    <div class="input-with-icon">
+<!--                        <i class="fa-solid fa-envelope"></i>-->
+                        <input id="username" name="username" type="text" placeholder="Enter Username" required>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" 
-                           class="form-control" 
-                           id="password" 
-                           name="password" 
-                           placeholder="Enter password" 
-                           required>
+                <div class="form-group">
+                    <div class="label-row">
+                        <label>Password</label>
+                    </div>
+                    <div class="input-with-icon">
+<!--                        <i class="fa-solid fa-lock"></i>-->
+                        <input id="password" name="password" type="password" placeholder="••••••••" required>
+                    </div>
                 </div>
 
-                <div class="form-check mb-3">
-                    <input class="form-check-input" 
-                           type="checkbox" 
-                           name="remember" 
-                           id="remember">
-                    <label class="form-check-label" for="remember">
-                        Remember me
-                    </label>
-                </div>
-
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary">Login</button>
-                    <a href="<c:url value='/user/register.do'/>" class="nav-link">Don't have account? Register</a>
-                </div>
+                <button type="submit" class="btn-auth">Login to Account</button>
             </form>
+
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="<c:url value='/user/register.do'/>">Create one</a></p>
+            </div>
         </div>
+        <a href="<c:url value='/home/index.do'/>" class="back-home"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
     </div>
 </div>
+
+

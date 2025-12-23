@@ -134,4 +134,19 @@ public class Product {
     public double getPriceAfterDiscount() {
         return price * (1 - discount);
     }
+
+    public boolean isNewArrival(){
+        if (createdAt == null) {
+            return false;
+        }
+
+        long now = System.currentTimeMillis();
+        long createdTime = createdAt.getTime();
+
+        long diffInMillis = now - createdTime;
+        long diffInDays = diffInMillis / (1000 * 60 * 60 * 24);
+
+        return diffInDays <= 20;
+    }
+
 }

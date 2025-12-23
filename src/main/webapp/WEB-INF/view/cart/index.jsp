@@ -1,133 +1,113 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-<div class="container mt-4">
+<main class="container cart-page">
+    <nav class="breadcrumbs">
+        <a href="<c:url value='/home/index.do'/>">Home</a> <i class="fa-solid fa-chevron-right"></i> <span>Shopping Cart</span>
+    </nav>
 
-    <h2 class="mb-4">Your Shopping Cart</h2>
-    <c:if test="${message != null}">
-        <div class="alert alert-danger">${message}</div>
-    </c:if>
-    <c:if test="${empty cartItems}">
-        <div class="alert alert-info">Your cart is empty.</div>
-        <a href="<c:url value='/product/index.do?page=1'/>" class="btn btn-primary mt-3">
-            Continue Shopping
-        </a>
-    </c:if>
+    <h1 class="page-title">Shopping Cart</h1>
 
-    <c:if test="${not empty cartItems}">
-
-        <table class="table table-bordered align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>Product</th>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th width="120">Quantity</th>
-                    <th>Total</th>
-                    <th>Update</th>
-                    <th>Remove</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-                <c:forEach var="item" items="${cartItems}">
-                    <!-- FORM must wrap the entire <tr> -->
-                <form id="form-${item.product.id}" action="<c:url value='/cart/update.do'/>" method="post">
-                    <tr>
-
-                        <!-- Product Image -->
-                        <td width="120">
-                            <img src="<c:url value='/${item.product.imagePath}'/>"
-                                 class="img-fluid rounded"
-                                 style="max-height: 80px;">
-                        </td>
-
-                        <!-- Name -->
-                        <td>
-                            <strong>${item.product.name}</strong>
-                        </td>
-
-                        <!-- Price with Discount -->
-                        <td>
-                            <c:choose>
-                                <c:when test="${item.product.discount > 0}">
-                                    <!-- Original price struck-through -->
-                                    <span class="text-muted">
-                                        <s><fmt:formatNumber value="${item.product.price}" type="number" minFractionDigits="2"/></s>
-                                    </span><br/>
-                                    <!-- Discounted price -->
-                                    $<fmt:formatNumber value="${item.product.priceAfterDiscount}" type="number" minFractionDigits="2"/>
-                                </c:when>
-                                <c:otherwise>
-                                    $<fmt:formatNumber value="${item.product.price}" type="number" minFractionDigits="2"/>
-                                </c:otherwise>
-                            </c:choose>
-                        </td>
-
-                        <!-- Quantity -->
-                        <td>
-                            <input type="number"
-                                   name="qty"
-                                   value="${item.quantity}"
-                                   min="1"
-                                   class="form-control text-center">
-
-                            <!-- Hidden ID -->
+    <div class="cart-layout">
+        <div class="cart-items">
+            <c:forEach var="item" items="${cartItems}">
+                <form action="<c:url value='/cart/update.do'/>" method="post">
+                    <div class="cart-item">
+                        <div class="item-img">
+                            <img  src="<c:url value='/${item.product.imagePath}'/>" alt="Product">
+                        </div>
+                        <div class="item-details">
+                            <h3>${item.product.name}</h3>
                             <input type="hidden" name="id" value="${item.product.id}">
-                        </td>
-
-                        <!-- Row Total with Discount -->
-                        <td>
-                            $<fmt:formatNumber value="${item.product.priceAfterDiscount * item.quantity}" type="number" minFractionDigits="2"/>
-                        </td>
-
-                        <!-- Update Button -->
-                        <td>
-                            <a class="btn btn-primary btn-sm"
-                               href="javascript:void(0);"
-                               onclick="document.getElementById('form-${item.product.id}').submit();">
-                                Update
+                            <p class="item-variant">Color: Electric Blue</p>
+                            <a href="<c:url value='/cart/remove.do?id=${item.product.id}'/>" class="remove-btn">
+                                <i class="fa-solid fa-trash-can"></i> Remove
                             </a>
-                        </td>
+                        </div>
+                        <div class="item-price-qty">
+                            <div class="price-display-group">
+                                <div class="unit-price-info">
+                                    <span class="price-label">Price:</span>
 
-                        <!-- Remove -->
-                        <td>
-                            <a href="<c:url value='/cart/remove.do?id=${item.product.id}'/>"
-                               class="btn btn-danger btn-sm">
-                                X
-                            </a>
-                        </td>
+                                    <div class="price-wrapper">
+                                        <c:choose>
+                                            <c:when test="${item.product.discount > 0}">
+                                                <del>
+                                                    <span class="old-price-small">
+                                                        <fmt:formatNumber value="${item.product.price}" type="currency"/>
+                                                    </span>
+                                                </del>
+                                                <span class="unit-price">
+                                                    <fmt:formatNumber value="${item.product.priceAfterDiscount}" type="currency"/>
+                                                </span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="unit-price">
+                                                    <fmt:formatNumber value="${item.product.price}" type="currency"/>
+                                                </span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                </div>
+                                <div class="line-total-info">
+                                    <span class="price-label">Subtotal:</span>
+                                    <span class="item-total-price"> <fmt:formatNumber value="${item.total}" type="currency"/></span>
+                                </div>
+                            </div>
 
-                    </tr>
+                            <div class="item-actions-row">
+                                <div class="quantity-wrapper">
+                                    <div class="modern-qty-selector">
+                                        <button type="button" class="qty-trigger minus"
+                                                onclick="this.parentNode.querySelector('input').stepDown()">
+                                            <i class="fa-solid fa-minus"></i>
+                                        </button>
+                                        <input name="qty" type="number" value="${item.quantity}" min="1" class="qty-input-field">
+                                        <button type="button" class="qty-trigger plus"
+                                                onclick="this.parentNode.querySelector('input').stepUp()">
+                                            <i class="fa-solid fa-plus"></i>
+                                        </button>
+                                    </div>
+                                    <button type="submit" class="update-cart-btn">
+                                        <i class="fa-solid fa-rotate"></i>
+                                        <span>Update</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </c:forEach>
-
-            </tbody>
-        </table>
-
-        <!-- Cart Actions: Total + Empty Cart -->
-        <div class="d-flex justify-content-between">
-
-            <h4>
-                Total:
-                $<fmt:formatNumber value="${grandTotal}" type="number" minFractionDigits="2"/>
-            </h4>
-
-            <!-- EMPTY CART -->
-            <a href="<c:url value='/cart/empty.do'/>"
-               class="btn btn-outline-danger btn-lg"
-               onclick="return confirm('Are you sure you want to empty the cart?');">
-                Empty Cart
-            </a>
-
         </div>
 
-        <div class="mt-4 d-flex justify-content-end">
-            <a href="<c:url value='/order/checkout.do'/>" class="btn btn-success btn-lg">
-                Proceed to Checkout
-            </a>
-        </div>
+        <aside class="cart-summary">
+            <h3>Order Summary</h3>
 
-    </c:if>
-</div>
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span><fmt:formatNumber value="${cart.total}" type="currency"/></span>
+            </div>
+            <div class="summary-row">
+                <span>Shipping</span>
+                <span>FREE</span>
+            </div>
+            <div class="summary-row">
+                <span>Estimated Tax</span>
+                <span>$0</span>
+            </div>
+
+            <div class="summary-row total">
+                <span>Total</span>
+                <span><fmt:formatNumber value="${cart.total}" type="currency"/></span>
+            </div>
+
+            <form action="<c:url value='/order/checkout.do'/>" method="get">
+                <button class="btn-checkout">Checkout Now</button>
+            </form>
+
+            <a href="<c:url value='/product/index.do?page=1'/>" class="continue-shopping">Continue Shopping</a>
+        </aside>
+    </div>
+</main>
+
+
